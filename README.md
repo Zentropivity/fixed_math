@@ -1,3 +1,10 @@
+This library implements analytic/trigonometric functions for [fixed point numbers](https://gitlab.com/tspiteri/fixed).
+
+Implemented functions:
+
+- `sqrt` from trait `TODO`
+- TODO
+
 ## License
 
 All code in this repository is dual-licensed under either:
@@ -6,6 +13,8 @@ All code in this repository is dual-licensed under either:
 - Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0))
 
 at your option.
+
+We use code modified from [cordic's algorithms](https://github.com/sebcrozet/cordic), license is in BSD-3-Clause and can be found at `third_party/LICENSE_CORDIC`.
 
 ## Contributing
 
