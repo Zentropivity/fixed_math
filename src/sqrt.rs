@@ -5,7 +5,7 @@
 //! Our sqrt function is a modified version of [cordic's sqrt](https://github.com/sebcrozet/cordic).
 // The BSD 3-Clause license of cordic can [be found here](../third_party/LICENSE_CORDIC).
 
-use fixed::traits::Fixed;
+use fixed::traits::{Fixed, FixedSigned, FixedUnsigned};
 
 use crate::util::*;
 
@@ -40,26 +40,19 @@ use crate::util::*;
 ///
 /// This implementation only handles numbers which can represent the value 1.
 ///
-pub fn sqrt<Val>(num: Val) -> Val
+pub fn sqrt_u<Val>(num: Val) -> Val
 where
-    Val: Fixed,
+    Val: FixedUnsigned,
 {
     debug_assert!(
         Val::ZERO <= num,
         "can not take square root of negative number!"
     );
     debug_assert!(
-        0 < Val::INT_NBITS,
+        0u32 < Val::INT_NBITS,
         "cannot take square root of numbers without integer bits!"
     );
-    debug_assert!(
-        !(!Val::IS_SIGNED && 1 == Val::INT_NBITS),
-        "use `sqrt_u1` for unsigned numbers with 1 integer bit!"
-    );
-    debug_assert!(
-        !(Val::IS_SIGNED && 1 == Val::INT_NBITS),
-        "use `sqrt_i1` for numbers that cannot represent 1"
-    );
+    debug_assert!(1u32 < Val::INT_NBITS, "use `sqrt_u1` instead!");
 
     if num == Val::ZERO || num == fixed_one::<Val>() {
         return num;
@@ -96,7 +89,73 @@ where
         let next_res = res + pow;
         println!("# {i} {next_res}");
         debug_assert!(Val::ZERO <= next_res, "shit");
-        todo!("Fix i2");
+        if if let Some(nr_sq) = next_res.checked_mul(next_res) {
+            nr_sq <= num
+        } else {
+            false
+        } {
+            res = next_res;
+        }
+    }
+    res
+}
+
+pub fn sqrt_i<Val>(num: Val) -> Val
+where
+    Val: FixedSigned,
+{
+    debug_assert!(
+        Val::ZERO <= num,
+        "cannot take square root of negative number!"
+    );
+    debug_assert!(
+        0 < Val::INT_NBITS,
+        "cannot take square root of numbers without integer bits!"
+    );
+    debug_assert!(1u32 < Val::INT_NBITS, "use `sqrt_i1` instead!");
+
+    if num == Val::ZERO || num == fixed_one::<Val>() {
+        return num;
+    }
+
+    let mut pow: Val;
+    let mut res: Val;
+
+    if num < fixed_one::<Val>() {
+        pow = fixed_one::<Val>() >> 1u32; //TODO? maybe this could be a constant
+
+        while num <= pow.unwrapped_mul(pow) {
+            // Note: unwrapped_mul will not panic because pow > 0
+            pow >>= 1u32;
+        }
+
+        res = pow;
+    } else {
+        // 1 < num
+        let mut n: u32 = Val::INT_NBITS - 2;
+        pow = fixed_one::<Val>(); //TODO maybe const?
+        while if let Some(p) = pow.checked_mul(pow) {
+            p <= num && n != 0u32
+        } else {
+            false
+        } {
+            //TODO log
+            //TODO bench
+            pow <<= 1u32;
+            n -= 1u32;
+        }
+        if n == 0 {
+            res = pow;
+        } else {
+            res = pow >> 1u32;
+        }
+    }
+
+    for i in 0..fixed_bits::<Val>() {
+        pow >>= 1u32;
+        let next_res = res + pow;
+        println!("# {i} {next_res}");
+        debug_assert!(Val::ZERO <= next_res, "shit");
         if if let Some(nr_sq) = next_res.checked_mul(next_res) {
             nr_sq <= num
         } else {
@@ -111,7 +170,7 @@ where
 /// Take square root of fixed number that cannot represent 1.
 pub fn sqrt_i1<Val>(num: Val) -> Val
 where
-    Val: Fixed,
+    Val: FixedSigned,
 {
     debug_assert!(
         Val::ZERO <= num,
@@ -126,10 +185,6 @@ where
     debug_assert!(
         1 == Val::INT_NBITS,
         "use `sqrt` for numbers with more integer bits!"
-    );
-    debug_assert!(
-        Val::IS_SIGNED,
-        "use `sqrt_u1` for unsigned numbers with 1 integer bit!"
     );
 
     if num == Val::ZERO {
@@ -163,7 +218,7 @@ where
 /// Take square root of unsigned fixed number that has 1 integer bits.
 pub fn sqrt_u1<Val>(num: Val) -> Val
 where
-    Val: Fixed,
+    Val: FixedUnsigned,
 {
     debug_assert!(
         Val::ZERO <= num,
@@ -176,10 +231,6 @@ where
     debug_assert!(
         1 == Val::INT_NBITS,
         "use `sqrt` for numbers with more integer bits!"
-    );
-    debug_assert!(
-        !Val::IS_SIGNED,
-        "use `sqrt_i1` for signed numbers with 1 integer bit!"
     );
 
     if num == Val::ZERO {
