@@ -1,45 +1,24 @@
 //! Square root functions for fixed numbers.
 //!
+//! - `sqrt_u` : for unsigned numbers with 1 < int bits
+//! - `sqrt_i` : for signed numbers with 1 < int bits
+//! - `sqrt_u1` : for unsigned numbers with 1 integer bits
+//! - `sqrt_i1` : for signed numbers with 1 integer bits
+//!
+//! Square root is not implemented for fixed numbers with 0 integer bits as it would almost always overflow.
+//!
 //! ### License
 //!
-//! Our sqrt function is a modified version of [cordic's sqrt](https://github.com/sebcrozet/cordic).
-// The BSD 3-Clause license of cordic can [be found here](../third_party/LICENSE_CORDIC).
+//! Our sqrt function is a modified version of [cordic's](https://github.com/sebcrozet/cordic).
+// The BSD 3-Clause license of cordic can be found here: third_party/LICENSE_CORDIC.
 
-use fixed::traits::{Fixed, FixedSigned, FixedUnsigned};
+use fixed::traits::{FixedSigned, FixedUnsigned};
 
 use crate::util::*;
 
-// pub trait FixedSqrt: Fixed {
-//     fn sqrt(&self) -> Self;
-// }
-
-// macro_rules! impl_sqrt {
-//     ($f:ident, $f0:ident) => {
-//         impl<Frac> FixedSqrt for $f<Frac>
-//         where
-//             Frac: Unsigned + $f0,
-//         {
-//             #[inline]
-//             fn sqrt(&self) -> Self {
-//                 //TODO
-//                 self.clone()
-//             }
-//         }
-//     };
-// }
-// impl_sqrt!(FixedI8, LeEqU8);
-
-// pub fn sqrt_unsigned<Val>(num: Val) -> Val
-// where
-//     Val: FixedSigned,
-// {
-//     //TODO use next_power_of_two somehow
-//     num
-// }
-/// Take square root of fixed number.
+/// Calculate square root of unsigned fixed number.
 ///
-/// This implementation only handles numbers which can represent the value 1.
-///
+/// This implementation only handles numbers which can represent 1.
 pub fn sqrt_u<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,
@@ -84,11 +63,9 @@ where
         res = pow >> 1u32;
     }
 
-    for i in 0..fixed_bits::<Val>() {
+    for _ in 0..fixed_bits::<Val>() {
         pow >>= 1u32;
         let next_res = res + pow;
-        println!("# {i} {next_res}");
-        debug_assert!(Val::ZERO <= next_res, "shit");
         if if let Some(nr_sq) = next_res.checked_mul(next_res) {
             nr_sq <= num
         } else {
@@ -100,6 +77,9 @@ where
     res
 }
 
+/// Take square root of signed fixed number.
+///
+/// This implementation only handles numbers which can represent 1.
 pub fn sqrt_i<Val>(num: Val) -> Val
 where
     Val: FixedSigned,
@@ -133,7 +113,7 @@ where
     } else {
         // 1 < num
         let mut n: u32 = Val::INT_NBITS - 2;
-        pow = fixed_one::<Val>(); //TODO maybe const?
+        pow = fixed_one::<Val>();
         while if let Some(p) = pow.checked_mul(pow) {
             p <= num && n != 0u32
         } else {
@@ -151,11 +131,13 @@ where
         }
     }
 
-    for i in 0..fixed_bits::<Val>() {
+    for _ in 0..fixed_bits::<Val>() {
         pow >>= 1u32;
+        if pow == Val::ZERO {
+            //TODO bench on others too
+            break;
+        }
         let next_res = res + pow;
-        println!("# {i} {next_res}");
-        debug_assert!(Val::ZERO <= next_res, "shit");
         if if let Some(nr_sq) = next_res.checked_mul(next_res) {
             nr_sq <= num
         } else {
@@ -167,7 +149,7 @@ where
     res
 }
 
-/// Take square root of fixed number that cannot represent 1.
+/// Calculate square root of signed fixed number that has 1 integer bit.
 pub fn sqrt_i1<Val>(num: Val) -> Val
 where
     Val: FixedSigned,
@@ -215,7 +197,7 @@ where
     res
 }
 
-/// Take square root of unsigned fixed number that has 1 integer bits.
+/// Calculate square root of unsigned fixed number that has 1 integer bits.
 pub fn sqrt_u1<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,

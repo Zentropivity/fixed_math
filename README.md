@@ -14,7 +14,7 @@ All code in this repository is dual-licensed under either:
 
 at your option.
 
-We use code modified from [cordic's algorithms](https://github.com/sebcrozet/cordic), license is in BSD-3-Clause and can be found at `third_party/LICENSE_CORDIC`.
+We use code modified from [cordic's algorithms](https://github.com/sebcrozet/cordic), license is BSD-3-Clause - [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
 
 ## Contributing
 
