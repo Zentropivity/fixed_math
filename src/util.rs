@@ -14,5 +14,5 @@ pub const fn fixed_bits<Val>() -> u32
 where
     Val: Fixed,
 {
-    Val::INT_NBITS + Val::FRAC_NBITS
+    (Val::INT_BITS + Val::FRAC_BITS) as u32
 }

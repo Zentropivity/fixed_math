@@ -2,8 +2,8 @@ This library implements analytic/trigonometric functions for [fixed point number
 
 Implemented functions:
 
-- `sqrt` from trait `TODO`
-- TODO
+- `sqrt` from trait `FixedSqrt`
+- TODO sin,cos,ln,exp,pow
 
 ## License
 
@@ -14,7 +14,7 @@ All code in this repository is dual-licensed under either:
 
 at your option.
 
-We use code modified from [cordic's algorithms](https://github.com/sebcrozet/cordic), license is BSD-3-Clause - [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
+We use code modified from [cordic's algorithms](https://github.com/sebcrozet/cordic), licensed as BSD-3-Clause - [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
 
 ## Contributing
 

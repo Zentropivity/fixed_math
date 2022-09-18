@@ -1,9 +1,11 @@
 //! Square root functions for fixed numbers.
 //!
-//! - `sqrt_u` : for unsigned numbers with 1 < int bits
-//! - `sqrt_i` : for signed numbers with 1 < int bits
-//! - `sqrt_u1` : for unsigned numbers with 1 integer bits
-//! - `sqrt_i1` : for signed numbers with 1 integer bits
+//! - `sqrt_u` : for unsigned numbers with 1 < integer bits
+//! - `sqrt_u0` : for unsigned numbers with 0 integer bits
+//! - `sqrt_u1` : for unsigned numbers with 1 integer bit
+//! - `sqrt_i` : for signed numbers with 1 < integer bits
+//! - `sqrt_i1` : for signed numbers with 1 integer bit
+//! - _`sqrt_i0`_ : Does not exist, because sqrt of number can not be represented.
 //!
 //! Square root is not implemented for fixed numbers with 0 integer bits as it would almost always overflow.
 //!
@@ -19,6 +21,8 @@ use crate::util::*;
 /// Calculate square root of unsigned fixed number.
 ///
 /// This implementation only handles numbers which can represent 1.
+/// Use `sqrt_u1` for number with 1 integer bit.
+/// Use `sqrt_u0` for number without integer bits.
 pub fn sqrt_u<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,
@@ -27,11 +31,12 @@ where
         Val::ZERO <= num,
         "can not take square root of negative number!"
     );
+    debug_assert!(0 != Val::INT_BITS, "use `sqrt_u0` instead!");
     debug_assert!(
-        0u32 < Val::INT_NBITS,
+        0 < Val::INT_BITS,
         "cannot take square root of numbers without integer bits!"
     );
-    debug_assert!(1u32 < Val::INT_NBITS, "use `sqrt_u1` instead!");
+    debug_assert!(1 < Val::INT_BITS, "use `sqrt_u1` instead!");
 
     if num == Val::ZERO || num == fixed_one::<Val>() {
         return num;
@@ -77,9 +82,100 @@ where
     res
 }
 
+/// Calculate square root of unsigned fixed number that has 1 integer bits.
+pub fn sqrt_u1<Val>(num: Val) -> Val
+where
+    Val: FixedUnsigned,
+{
+    debug_assert!(
+        Val::ZERO <= num,
+        "cannot take square root of negative number!"
+    );
+    debug_assert!(
+        -1 < Val::INT_BITS,
+        "not implemented for negative number of bits!"
+    );
+    debug_assert!(0 != Val::INT_BITS, "use `sqrt_u0` instead!");
+    debug_assert!(
+        1 == Val::INT_BITS,
+        "use `sqrt` for numbers with more integer bits!"
+    );
+
+    if num == Val::ZERO {
+        return num;
+    }
+
+    let mut pow: Val;
+    let mut res: Val;
+
+    pow = Val::DELTA << Val::FRAC_BITS as u32; //TODO? maybe this could be a constant
+    while num <= pow.unwrapped_mul(pow) {
+        pow >>= 1u32;
+    }
+
+    res = pow;
+
+    for _ in 0..fixed_bits::<Val>() {
+        pow >>= 1u32;
+        let next_res = res + pow;
+        if if let Some(nr_sq) = next_res.checked_mul(next_res) {
+            nr_sq <= num
+        } else {
+            false
+        } {
+            res = next_res;
+        }
+    }
+    res
+}
+
+/// Calculate square root of unsigned fixed number without integer bits.
+pub fn sqrt_u0<Val>(num: Val) -> Val
+where
+    Val: FixedUnsigned,
+{
+    debug_assert!(
+        Val::ZERO <= num,
+        "can not take square root of negative number!"
+    );
+    debug_assert!(
+        -1 < Val::INT_BITS,
+        "not implemented for negative number of bits!"
+    );
+    debug_assert!(0 == Val::INT_BITS, "use `sqrt_u` or `sqrt_u1` instead!");
+
+    if num == Val::ZERO {
+        return num;
+    }
+
+    let mut pow: Val;
+    let mut res: Val;
+
+    pow = Val::DELTA << (Val::FRAC_BITS - 1) as u32; //TODO? maybe this could be a constant
+    while num <= pow.unwrapped_mul(pow) {
+        pow >>= 1u32;
+    }
+
+    res = pow;
+
+    for _ in 0..fixed_bits::<Val>() {
+        pow >>= 1u32;
+        let next_res = res + pow;
+        if if let Some(nr_sq) = next_res.checked_mul(next_res) {
+            nr_sq <= num
+        } else {
+            false
+        } {
+            res = next_res;
+        }
+    }
+    res
+}
+
 /// Take square root of signed fixed number.
 ///
 /// This implementation only handles numbers which can represent 1.
+/// Use `sqrt_i1` for numbers with 1 integer bit.
 pub fn sqrt_i<Val>(num: Val) -> Val
 where
     Val: FixedSigned,
@@ -89,10 +185,14 @@ where
         "cannot take square root of negative number!"
     );
     debug_assert!(
-        0 < Val::INT_NBITS,
+        -1 < Val::INT_BITS,
+        "not implemented for negative number of bits!"
+    );
+    debug_assert!(
+        0 < Val::INT_BITS,
         "cannot take square root of numbers without integer bits!"
     );
-    debug_assert!(1u32 < Val::INT_NBITS, "use `sqrt_i1` instead!");
+    debug_assert!(1 < Val::INT_BITS, "use `sqrt_i1` instead!");
 
     if num == Val::ZERO || num == fixed_one::<Val>() {
         return num;
@@ -112,15 +212,14 @@ where
         res = pow;
     } else {
         // 1 < num
-        let mut n: u32 = Val::INT_NBITS - 2;
+        let mut n: u32 = Val::INT_BITS as u32 - 2;
         pow = fixed_one::<Val>();
         while if let Some(p) = pow.checked_mul(pow) {
             p <= num && n != 0u32
         } else {
             false
         } {
-            //TODO log
-            //TODO bench
+            //TODO bench against unsigned
             pow <<= 1u32;
             n -= 1u32;
         }
@@ -134,7 +233,7 @@ where
     for _ in 0..fixed_bits::<Val>() {
         pow >>= 1u32;
         if pow == Val::ZERO {
-            //TODO bench on others too
+            //TODO bench -> keep or remove this if
             break;
         }
         let next_res = res + pow;
@@ -159,13 +258,17 @@ where
         "cannot take square root of negative number!"
     );
     debug_assert!(
-        0 < Val::INT_NBITS,
+        -1 < Val::INT_BITS,
+        "not implemented for negative number of bits!"
+    );
+    debug_assert!(
+        0 < Val::INT_BITS,
         "cannot take square root of numbers without integer bits!"
     );
     // Note: if they can represent 1, then they can represent > 1
     // we do not handle that in this function
     debug_assert!(
-        1 == Val::INT_NBITS,
+        1 == Val::INT_BITS,
         "use `sqrt` for numbers with more integer bits!"
     );
 
@@ -176,53 +279,7 @@ where
     let mut pow: Val;
     let mut res: Val;
 
-    pow = Val::DELTA << Val::FRAC_NBITS - 1; //TODO? maybe this could be a constant
-    while num <= pow.unwrapped_mul(pow) {
-        pow >>= 1u32;
-    }
-
-    res = pow;
-
-    for _ in 0..fixed_bits::<Val>() {
-        pow >>= 1u32;
-        let next_res = res + pow;
-        if if let Some(nr_sq) = next_res.checked_mul(next_res) {
-            nr_sq <= num
-        } else {
-            false
-        } {
-            res = next_res;
-        }
-    }
-    res
-}
-
-/// Calculate square root of unsigned fixed number that has 1 integer bits.
-pub fn sqrt_u1<Val>(num: Val) -> Val
-where
-    Val: FixedUnsigned,
-{
-    debug_assert!(
-        Val::ZERO <= num,
-        "cannot take square root of negative number!"
-    );
-    debug_assert!(
-        0 < Val::INT_NBITS,
-        "cannot take square root of numbers without integer bits!"
-    );
-    debug_assert!(
-        1 == Val::INT_NBITS,
-        "use `sqrt` for numbers with more integer bits!"
-    );
-
-    if num == Val::ZERO {
-        return num;
-    }
-
-    let mut pow: Val;
-    let mut res: Val;
-
-    pow = Val::DELTA << Val::FRAC_NBITS; //TODO? maybe this could be a constant
+    pow = Val::DELTA << Val::FRAC_BITS as u32 - 1; //TODO? maybe this could be a constant
     while num <= pow.unwrapped_mul(pow) {
         pow >>= 1u32;
     }
