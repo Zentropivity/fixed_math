@@ -12,4 +12,15 @@ fn main() {
     for n in v {
         println!("sin_cos {} = {:?}", n, sin_cos(n));
     }
+
+    let v = vec![
+        I32F96::from_num(2),
+        I32F96::PI,
+        I32F96::MAX,
+        I32F96::MAX >> 1u32,
+    ];
+    println!("I32F96");
+    for n in v {
+        println!("sin_cos {} = {:?}", n, sin_cos(n));
+    }
 }

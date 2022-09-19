@@ -13,7 +13,7 @@ fn build_cordic_atan_table(num_entries: u8) -> Vec<u128> {
     for _ in 0..num_entries {
         let atan = angle.atan();
         //TODO test: is this correct byte alignment from 'atan.inner()'
-        let ival = U0F128::from_bits(u128::from_le_bytes(atan.inner()));
+        let ival = U0F128::from_bits(u128::from_be_bytes(atan.inner()));
         table.push(ival.to_bits());
         angle = angle * step;
     }
