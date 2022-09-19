@@ -12,7 +12,7 @@
 //! ### License
 //!
 //! Our sqrt function is a modified version of [cordic's](https://github.com/sebcrozet/cordic).
-// The BSD 3-Clause license of cordic can be found here: third_party/LICENSE_CORDIC.
+// The BSD 3-Clause license of cordic can be found at: third_party/LICENSE_CORDIC.
 
 use fixed::traits::{FixedSigned, FixedUnsigned};
 
