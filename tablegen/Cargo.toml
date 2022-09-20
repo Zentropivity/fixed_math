@@ -8,3 +8,4 @@ license = "MIT OR Apache-2.0"
 f128 = { version = "0.2.9" }
 fixed = { path = "../../fixed" }
 num-traits = "0.2.6"
+fixed_math = { path = "../" }
