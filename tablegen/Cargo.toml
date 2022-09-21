@@ -5,7 +5,5 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-f128 = { version = "0.2.9" }
-fixed = { path = "../../fixed" }
-num-traits = "0.2.6"
-fixed_math = { path = "../" }
+fixed = "1.19.0"
+fixed-macro = "1.1.1"

@@ -1,26 +1,16 @@
 use fixed::types::*;
-use fixed_math::sin_cos;
+use fixed_math::*;
 
 fn main() {
     let v = vec![
-        // I32F32::from_num(2),
         // I32F32::PI,
-        // I32F32::MAX,
         I32F32::from_num(30),
+        I32F32::from_num(60),
+        I32F32::from_num(90),
+        // I32F32::MAX,
     ];
-    println!("I32F32");
+    println!("I32F32 deg");
     for n in v {
-        println!("sin_cos {} = {:?}", n, sin_cos(n));
+        println!("sin_cos {} = {:?}", n, sin_cos_unchecked(n));
     }
-
-    // let v = vec![
-    //     I32F96::from_num(2),
-    //     I32F96::PI,
-    //     I32F96::MAX,
-    //     I32F96::from_num(30),
-    // ];
-    // println!("I32F96");
-    // for n in v {
-    //     println!("sin_cos {} = {:?}", n, sin_cos(n));
-    // }
 }

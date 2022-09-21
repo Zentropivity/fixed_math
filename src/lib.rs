@@ -11,3 +11,5 @@ pub use sqrt::*;
 
 mod trig;
 pub use trig::*;
+
+pub mod tables;
