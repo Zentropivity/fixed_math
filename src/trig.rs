@@ -12,6 +12,7 @@ use fixed::{
 
 use crate::{
     tables::{ATAN_2P_DEG, ATAN_2P_RAD},
+    util::fixed_one,
     FixedRadians,
 };
 
@@ -67,15 +68,25 @@ pub fn sin_cos<Val: FixedSigned + FixedStrict>(mut angle_degs: Val) -> (Val, Val
     }
 }
 
-/// Calculate arctangent of y/x.
-/// This only works for angles between -90 and 90 (degrees).
+/// Calculate tangent of an angle in degrees.
+/// Returns None when the cos is 0 or on overflow.
 #[inline]
-fn atan_div_unchecked<Val: FixedSigned + FixedStrict>(mut y: Val, mut x: Val) -> Val {
-    debug_assert!(
-        y / x <= Val::from_num(90) && Val::from_num(-90) <= y / x,
-        "Can only take sin_cos of values in -90 to 90! Got: {}",
-        y / x
-    );
+pub fn tan<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> Option<Val> {
+    let (sin, cos) = sin_cos(angle_degs);
+    sin.checked_div(cos)
+}
+
+/// Calculate arctangent of an angle in degrees.
+/// This is only correct for angles between -90 and 90 (degrees).
+#[inline]
+pub fn atan_deg_unchecked<Val: FixedSigned + FixedStrict>(mut angle_degs: Val) -> Val {
+    atan_div_deg_unchecked(angle_degs, fixed_one::<Val>())
+}
+
+/// Calculate arctangent of y/x.
+/// This is only correct for angles between -90 and 90 (degrees).
+#[inline]
+pub fn atan_div_deg_unchecked<Val: FixedSigned + FixedStrict>(mut y: Val, mut x: Val) -> Val {
     let mut z: Val = Val::ZERO;
     let mut at: Val = atan_table_deg::<Val>(0);
     let mut i = 0u32;
