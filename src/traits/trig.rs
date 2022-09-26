@@ -1,46 +1,42 @@
-use fixed::{
-    traits::{FixedSigned, FixedStrict},
-    FixedI128, FixedI16, FixedI32, FixedI64, FixedI8,
-};
+use fixed::{traits::FixedSigned, FixedI128, FixedI16, FixedI32, FixedI64, FixedI8};
 use seq_macro::seq;
 
-use crate::util::{fixed_neg_one, fixed_one};
+// use crate::util::{fixed_neg_one, fixed_one};
 
 /// There are requirements for certain constants:
 ///
 /// - FRAC_PI_2 needs 2 int bits
 /// - PI needs 3 int bits
+/// - TAU needs 4 int bits
 ///
 /// => for a fixed number with N bits,
 ///    we can have at most N - 3 fractional bits for constants to be representable
-pub trait FixedTrigConsts: FixedSigned + FixedStrict {
-    const ONE: Self;
-    const NEG_ONE: Self;
-    const PI: Self;
+pub trait FixedRadians: FixedSigned {
     const FRAC_PI_2: Self;
+    const PI: Self;
+    const TAU: Self;
 }
 
-macro_rules! impl_trig_consts {
+// pub trait FixedDegrees: FixedSigned {
+//     const D_90: Self;
+//     const D_180: Self;
+//     const D_360: Self;
+// }
+
+macro_rules! impl_rad_consts {
     ($f:ident, $f0:literal) => {
         seq!(FRAC in 0..=$f0 {
-            impl FixedTrigConsts for $f<FRAC> {
-                const ONE: Self = fixed_one::<$f<FRAC>>();
-                const NEG_ONE: Self = fixed_neg_one::<$f<FRAC>>();
-                const PI: Self = Self::PI;
+            impl FixedRadians for $f<FRAC> {
                 const FRAC_PI_2: Self = Self::FRAC_PI_2;
+                const PI: Self = Self::PI;
+                const TAU: Self = Self::TAU;
             }
         });
     };
 }
 
-impl_trig_consts!(FixedI8, 5);
-impl_trig_consts!(FixedI16, 13);
-impl_trig_consts!(FixedI32, 29);
-impl_trig_consts!(FixedI64, 61);
-impl_trig_consts!(FixedI128, 125);
-
-// impl_trig_consts!(FixedU8, 5);
-// impl_trig_consts!(FixedU16, 13);
-// impl_trig_consts!(FixedU32, 29);
-// impl_trig_consts!(FixedU64, 61);
-// impl_trig_consts!(FixedU128, 125);
+impl_rad_consts!(FixedI8, 4);
+impl_rad_consts!(FixedI16, 12);
+impl_rad_consts!(FixedI32, 28);
+impl_rad_consts!(FixedI64, 60);
+impl_rad_consts!(FixedI128, 124);
