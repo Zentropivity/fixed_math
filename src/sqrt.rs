@@ -23,6 +23,7 @@ use crate::util::*;
 /// This implementation only handles numbers which can represent 1.
 /// Use `sqrt_u1` for number with 1 integer bit.
 /// Use `sqrt_u0` for number without integer bits.
+#[inline]
 pub fn sqrt_u<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,
@@ -83,6 +84,7 @@ where
 }
 
 /// Calculate square root of unsigned fixed number that has 1 integer bits.
+#[inline]
 pub fn sqrt_u1<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,
@@ -130,6 +132,7 @@ where
 }
 
 /// Calculate square root of unsigned fixed number without integer bits.
+#[inline]
 pub fn sqrt_u0<Val>(num: Val) -> Val
 where
     Val: FixedUnsigned,
@@ -176,6 +179,7 @@ where
 ///
 /// This implementation only handles numbers which can represent 1.
 /// Use `sqrt_i1` for numbers with 1 integer bit.
+#[inline]
 pub fn sqrt_i<Val>(num: Val) -> Val
 where
     Val: FixedSigned,
@@ -249,6 +253,7 @@ where
 }
 
 /// Calculate square root of signed fixed number that has 1 integer bit.
+#[inline]
 pub fn sqrt_i1<Val>(num: Val) -> Val
 where
     Val: FixedSigned,

@@ -3,7 +3,7 @@ use fixed::{
     types::{U0F128, U6F122},
 };
 
-pub(crate) const fn fixed_one<Val>() -> Val
+pub const fn fixed_one<Val>() -> Val
 where
     Val: Fixed,
 {
@@ -13,7 +13,7 @@ where
     }
 }
 
-pub(crate) const fn fixed_neg_one<Val>() -> Val
+pub const fn fixed_neg_one<Val>() -> Val
 where
     Val: FixedSigned,
 {

@@ -16,3 +16,10 @@ std = ["fixed/std"]
 fixed = { path = "../fixed" }
 # fixed = { git = "https://gitlab.com/tspiteri/fixed.git", rev = "12982db6" }
 seq-macro = { version = "0.3.1" }
+
+[dev-dependencies]
+criterion = "0.4"
+
+[[bench]]
+name = "sin_cos"
+harness = false

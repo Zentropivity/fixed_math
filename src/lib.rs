@@ -3,13 +3,11 @@
 
 pub mod util;
 
-mod traits;
+pub mod traits;
 pub use traits::*;
 
-mod sqrt;
-pub use sqrt::*;
+pub mod sqrt;
 
-mod trig;
-pub use trig::*;
+pub mod trig;
 
-pub mod tables;
+pub(crate) mod tables;
