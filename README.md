@@ -3,7 +3,49 @@ This library implements analytic/trigonometric functions for [fixed point number
 Implemented functions:
 
 - `sqrt` from trait `FixedSqrt`
-- TODO sin,cos, ?exp,pow
+- `sin_cos`, `sin`, `cos`, `tan` from trait `FixedSinCos`
+
+## Examples
+
+There are traits and standalone functions, see examples on how to use them.
+
+### Errors
+
+Check the examples to see about how much error this produces.
+
+Usually `sqrt` has an error of around 1-2 Delta.  
+(Delta = the distance to the next representable number)
+
+`sin_cos` may produce bigger errors, around 1-2 decimal places.
+
+## Benchmarks
+
+You can check or run the benchmarks in `benches`.
+
+Here are some conclusions I've got to:
+
+### SinCos
+
+_2022-09-28_
+
+Calculation time for sin_cos varies with the fixed number's byte size.
+
+- I10F6: ~ 8ns
+- I16F16: ~ 9ns
+- I32F32: ~ 18ns
+- I32F96: ~ 210ns
+
+Notes:
+
+- there are many different int bit / frac bit combinations; I did not test them  
+  (int bits must be >= 10 (but maybe I can do something to relax that further))
+- these are all calculations in degrees
+- code was compiled with native cpu features
+- go for FixedI32 instead of FixedI16 unless you are limited by memory much
+- I did a benchmark in the same style on `cordic`'s `sin_cos` on FixedI64
+  - keep in mind that `cordic` works with radians, I used the same angle values
+  - so they can take `sin_cos` of a lot bigger angle on the same number representation
+  - this crate was about 1.5-2 times faster on same angle sizes
 
 ## License
 
