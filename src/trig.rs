@@ -78,6 +78,65 @@ fn normalize_cordic<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
     (angle_degs, neg)
 }
 
+#[inline(always)]
+fn normalize_cordic_i9<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
+    let mut neg = false;
+    // FIXME these should be consts
+    // TODO bench against Val::from_fixed
+    let f_90 = Val::from_num(90);
+    let f_180 = Val::from_num(180);
+
+    // angle_degs %= f_360;
+
+    if angle_degs < -f_90 {
+        if -f_270 <= angle_degs {
+            angle_degs += f_180;
+            neg = true;
+        } else {
+            angle_degs += f_360;
+        }
+    } else if f_90 < angle_degs {
+        if angle_degs <= f_270 {
+            angle_degs -= f_180;
+            neg = true;
+        } else {
+            angle_degs -= f_360;
+        }
+    }
+    (angle_degs, neg)
+}
+
+#[inline(always)]
+fn normalize_cordic_i8<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
+    let mut neg = false;
+    // FIXME these should be consts
+    // TODO bench against Val::from_fixed
+    let f_90 = Val::from_num(90);
+
+    angle_degs %= f_360;
+
+    if angle_degs < -f_90 {
+        if -f_270 <= angle_degs {
+            angle_degs += f_180;
+            neg = true;
+        } else {
+            angle_degs += f_360;
+        }
+    } else if f_90 < angle_degs {
+        if angle_degs <= f_270 {
+            angle_degs -= f_180;
+            neg = true;
+        } else {
+            angle_degs -= f_360;
+        }
+    }
+    (angle_degs, neg)
+}
+
+todo!("i9,i8,i7");
+// Note: i7 is normalized already (-64 <= n < 64)
+// Can we have smaller? No, 45 has to fit.
+
 /// Compute sin and cos simultaneously of an angle in degrees.
 ///
 /// Note: number representation needs at least 10 integer bits to fit 360.
