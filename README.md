@@ -47,7 +47,7 @@ Notes:
 - go for FixedI32 instead of FixedI16 unless you are limited by memory much
 - I did a benchmark in the same style on `cordic`'s `sin_cos` on FixedI64
   - keep in mind that `cordic` works with radians, I used the same angle values
-  - so they can take `sin_cos` of a lot bigger angle on the same number representation
+  - so they can take `sin_cos` of a lot bigger angle on the same number representation size
   - this crate was about 1.5-2 times faster on same angle sizes
 
 ## License
