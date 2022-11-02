@@ -51,8 +51,7 @@ pub fn deg_to_rad<Val: Fixed>(angle_degs: Val) -> Val {
 #[inline(always)]
 fn normalize_cordic<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
     let mut neg = false;
-    // FIXME these should be consts
-    // TODO bench against Val::from_fixed
+    // TODO bench against Val::from_fixed; maybe these should be consts
     let f_90 = Val::from_num(90);
     let f_180 = Val::from_num(180);
     let f_270 = Val::from_num(270);
@@ -81,27 +80,17 @@ fn normalize_cordic<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
 #[inline(always)]
 fn normalize_cordic_i9<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
     let mut neg = false;
-    // FIXME these should be consts
-    // TODO bench against Val::from_fixed
     let f_90 = Val::from_num(90);
     let f_180 = Val::from_num(180);
 
     // angle_degs %= f_360;
 
     if angle_degs < -f_90 {
-        if -f_270 <= angle_degs {
-            angle_degs += f_180;
-            neg = true;
-        } else {
-            angle_degs += f_360;
-        }
+        angle_degs += f_180;
+        neg = true;
     } else if f_90 < angle_degs {
-        if angle_degs <= f_270 {
-            angle_degs -= f_180;
-            neg = true;
-        } else {
-            angle_degs -= f_360;
-        }
+        angle_degs -= f_180;
+        neg = true;
     }
     (angle_degs, neg)
 }
@@ -109,33 +98,24 @@ fn normalize_cordic_i9<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
 #[inline(always)]
 fn normalize_cordic_i8<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
     let mut neg = false;
-    // FIXME these should be consts
-    // TODO bench against Val::from_fixed
     let f_90 = Val::from_num(90);
 
-    angle_degs %= f_360;
-
     if angle_degs < -f_90 {
-        if -f_270 <= angle_degs {
-            angle_degs += f_180;
-            neg = true;
-        } else {
-            angle_degs += f_360;
-        }
+        angle_degs += f_90;
+        angle_degs += f_90;
+        neg = true;
     } else if f_90 < angle_degs {
-        if angle_degs <= f_270 {
-            angle_degs -= f_180;
-            neg = true;
-        } else {
-            angle_degs -= f_360;
-        }
+        angle_degs -= f_90;
+        angle_degs -= f_90;
+        neg = true;
     }
     (angle_degs, neg)
 }
 
-todo!("i9,i8,i7");
+// i9, i8, i7
 // Note: i7 is normalized already (-64 <= n < 64)
-// Can we have smaller? No, 45 has to fit.
+// Can we have smaller? Maybe... if we start atan counting from higher index
+//TODO i6 to i0
 
 /// Compute sin and cos simultaneously of an angle in degrees.
 ///
@@ -149,6 +129,45 @@ pub fn sin_cos<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
     } else {
         result
     }
+}
+
+//TODO make a constraint on trait Fixed int bits
+/// Compute sin and cos simultaneously of an angle in degrees.
+///
+/// Note: only use for number representation with 9 int bits.
+#[inline]
+pub fn sin_cos_i9<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+    let (angle_normalized, neg) = normalize_cordic_i9::<Val>(angle_degs);
+    let result = sin_cos_deg_unchecked(angle_normalized);
+    if neg {
+        (-result.0, -result.1)
+    } else {
+        result
+    }
+}
+
+/// Compute sin and cos simultaneously of an angle in degrees.
+///
+/// Note: only use for number representation with 8 int bits.
+#[inline]
+pub fn sin_cos_i8<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+    let (angle_normalized, neg) = normalize_cordic_i8::<Val>(angle_degs);
+    let result = sin_cos_deg_unchecked(angle_normalized);
+    if neg {
+        (-result.0, -result.1)
+    } else {
+        result
+    }
+}
+
+/// Compute sin and cos simultaneously of an angle in degrees.
+///
+/// Note: only use for number representation with 7 int bits.
+#[inline]
+pub fn sin_cos_i7<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+    //TODO make it work for less than i7
+    let angle_normalized = angle_degs;
+    sin_cos_deg_unchecked(angle_normalized) //TODO parameter for where to start atan table index
 }
 
 /// Compute sin of an angle in degrees.
@@ -227,11 +246,11 @@ where
 /// Only works with values in -90 to 90 degrees.
 #[inline]
 pub fn sin_cos_deg_unchecked<Val: FixedSigned + FixedStrict>(mut angle_degs: Val) -> (Val, Val) {
-    debug_assert!(
-        angle_degs <= Val::from_num(90) && Val::from_num(-90) <= angle_degs,
-        "Can only take sin_cos of values in -90 to 90! Got: {}",
-        angle_degs
-    );
+    // debug_assert!(
+    //     angle_degs <= Val::from_num(90) && Val::from_num(-90) <= angle_degs,
+    //     "Can only take sin_cos of values in -90 to 90! Got: {}",
+    //     angle_degs
+    // );
     let mut x: Val = Val::from_fixed(KN);
     let mut y: Val = Val::ZERO;
     let mut at: Val = atan_table_deg::<Val>(0);

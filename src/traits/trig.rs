@@ -31,12 +31,68 @@ macro_rules! impl_sincos_deg {
         });
     };
 }
+
+macro_rules! impl_sincos_deg_small {
+    ($f:ident, $f0:literal) => {
+        impl FixedSinCos for $f<{ $f0 + 2 }> {
+            fn sin_cos(self) -> (Self, Self) {
+                sin_cos_i7(self)
+            }
+            fn sin(self) -> Self {
+                sin_cos_i7(self).0
+            }
+            fn cos(self) -> Self {
+                sin_cos_i7(self).1
+            }
+            fn tan(self) -> Option<Self> {
+                let (sin, cos) = sin_cos_i7(self);
+                sin.checked_div(cos)
+            }
+        }
+        impl FixedSinCos for $f<{ $f0 + 1 }> {
+            fn sin_cos(self) -> (Self, Self) {
+                sin_cos_i8(self)
+            }
+            fn sin(self) -> Self {
+                sin_cos_i8(self).0
+            }
+            fn cos(self) -> Self {
+                sin_cos_i8(self).1
+            }
+            fn tan(self) -> Option<Self> {
+                let (sin, cos) = sin_cos_i8(self);
+                sin.checked_div(cos)
+            }
+        }
+        impl FixedSinCos for $f<$f0> {
+            fn sin_cos(self) -> (Self, Self) {
+                sin_cos_i9(self)
+            }
+            fn sin(self) -> Self {
+                sin_cos_i9(self).0
+            }
+            fn cos(self) -> Self {
+                sin_cos_i9(self).1
+            }
+            fn tan(self) -> Option<Self> {
+                let (sin, cos) = sin_cos_i9(self);
+                sin.checked_div(cos)
+            }
+        }
+    };
+}
+
 impl_sincos_deg!(FixedI16, 6);
 impl_sincos_deg!(FixedI32, 22);
 impl_sincos_deg!(FixedI64, 54);
 impl_sincos_deg!(FixedI128, 118);
 
-//TODO impl this somehow
+impl_sincos_deg_small!(FixedI16, 7);
+impl_sincos_deg_small!(FixedI32, 23);
+impl_sincos_deg_small!(FixedI64, 55);
+impl_sincos_deg_small!(FixedI128, 119);
+
+//TODO impl this somehow for perf
 // pub trait FixedDegrees: FixedSigned {
 //     const D_90: Self;
 //     const D_180: Self;
