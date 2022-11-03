@@ -32,12 +32,12 @@ where
         Val::ZERO <= num,
         "can not take square root of negative number!"
     );
-    debug_assert!(0 != Val::INT_BITS, "use `sqrt_u0` instead!");
+    debug_assert!(0 != Val::INT_NBITS, "use `sqrt_u0` instead!");
     debug_assert!(
-        0 < Val::INT_BITS,
+        0 < Val::INT_NBITS,
         "cannot take square root of numbers without integer bits!"
     );
-    debug_assert!(1 < Val::INT_BITS, "use `sqrt_u1` instead!");
+    debug_assert!(1 < Val::INT_NBITS, "use `sqrt_u1` instead!");
 
     if num == Val::ZERO || num == fixed_one::<Val>() {
         return num;
@@ -93,13 +93,13 @@ where
         Val::ZERO <= num,
         "cannot take square root of negative number!"
     );
+    // debug_assert!(
+    //     0 <= Val::INT_NBITS,
+    //     "not implemented for negative number of bits!"
+    // );
+    debug_assert!(0 != Val::INT_NBITS, "use `sqrt_u0` instead!");
     debug_assert!(
-        -1 < Val::INT_BITS,
-        "not implemented for negative number of bits!"
-    );
-    debug_assert!(0 != Val::INT_BITS, "use `sqrt_u0` instead!");
-    debug_assert!(
-        1 == Val::INT_BITS,
+        1 == Val::INT_NBITS,
         "use `sqrt` for numbers with more integer bits!"
     );
 
@@ -110,7 +110,7 @@ where
     let mut pow: Val;
     let mut res: Val;
 
-    pow = Val::DELTA << Val::FRAC_BITS as u32; //TODO? maybe this could be a constant
+    pow = Val::DELTA << Val::FRAC_NBITS as u32; //TODO? maybe this could be a constant
     while num <= pow.unwrapped_mul(pow) {
         pow >>= 1u32;
     }
@@ -141,11 +141,11 @@ where
         Val::ZERO <= num,
         "can not take square root of negative number!"
     );
-    debug_assert!(
-        -1 < Val::INT_BITS,
-        "not implemented for negative number of bits!"
-    );
-    debug_assert!(0 == Val::INT_BITS, "use `sqrt_u` or `sqrt_u1` instead!");
+    // debug_assert!(
+    //     0 <= Val::INT_NBITS,
+    //     "not implemented for negative number of bits!"
+    // );
+    debug_assert!(0 == Val::INT_NBITS, "use `sqrt_u` or `sqrt_u1` instead!");
 
     if num == Val::ZERO {
         return num;
@@ -154,7 +154,7 @@ where
     let mut pow: Val;
     let mut res: Val;
 
-    pow = Val::DELTA << (Val::FRAC_BITS - 1) as u32; //TODO? maybe this could be a constant
+    pow = Val::DELTA << (Val::FRAC_NBITS - 1) as u32; //TODO? maybe this could be a constant
     while num <= pow.unwrapped_mul(pow) {
         pow >>= 1u32;
     }
@@ -188,15 +188,15 @@ where
         Val::ZERO <= num,
         "cannot take square root of negative number!"
     );
+    // debug_assert!(
+    //     0 <= Val::INT_NBITS,
+    //     "not implemented for negative number of bits!"
+    // );
     debug_assert!(
-        -1 < Val::INT_BITS,
-        "not implemented for negative number of bits!"
-    );
-    debug_assert!(
-        0 < Val::INT_BITS,
+        0 < Val::INT_NBITS,
         "cannot take square root of numbers without integer bits!"
     );
-    debug_assert!(1 < Val::INT_BITS, "use `sqrt_i1` instead!");
+    debug_assert!(1 < Val::INT_NBITS, "use `sqrt_i1` instead!");
 
     if num == Val::ZERO || num == fixed_one::<Val>() {
         return num;
@@ -216,7 +216,7 @@ where
         res = pow;
     } else {
         // 1 < num
-        let mut n: u32 = Val::INT_BITS as u32 - 2;
+        let mut n: u32 = Val::INT_NBITS as u32 - 2;
         pow = fixed_one::<Val>();
         while if let Some(p) = pow.checked_mul(pow) {
             p <= num && n != 0u32
@@ -262,18 +262,18 @@ where
         Val::ZERO <= num,
         "cannot take square root of negative number!"
     );
+    // debug_assert!(
+    //     0 <= Val::INT_NBITS,
+    //     "not implemented for negative number of bits!"
+    // );
     debug_assert!(
-        -1 < Val::INT_BITS,
-        "not implemented for negative number of bits!"
-    );
-    debug_assert!(
-        0 < Val::INT_BITS,
+        0 < Val::INT_NBITS,
         "cannot take square root of numbers without integer bits!"
     );
     // Note: if they can represent 1, then they can represent > 1
     // we do not handle that in this function
     debug_assert!(
-        1 == Val::INT_BITS,
+        1 == Val::INT_NBITS,
         "use `sqrt` for numbers with more integer bits!"
     );
 
@@ -284,7 +284,7 @@ where
     let mut pow: Val;
     let mut res: Val;
 
-    pow = Val::DELTA << Val::FRAC_BITS as u32 - 1; //TODO? maybe this could be a constant
+    pow = Val::DELTA << Val::FRAC_NBITS as u32 - 1; //TODO? maybe this could be a constant
     while num <= pow.unwrapped_mul(pow) {
         pow >>= 1u32;
     }

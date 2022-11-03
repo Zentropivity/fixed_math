@@ -13,11 +13,11 @@ fn main() {
         println!("sqrt {} = {}", n, n.sqrt());
     }
 
-    let v = vec![I1F31::from_num(0.2), I1F31::MAX, I1F31::MAX >> 1u32];
-    println!("I1F31");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![I1F31::from_num(0.2), I1F31::MAX, I1F31::MAX >> 1u32];
+    // println!("I1F31");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
     let v = vec![
         U32F32::from_num(2),
@@ -41,35 +41,35 @@ fn main() {
         println!("sqrt {} = {}", n, n.sqrt());
     }
 
-    let v = vec![I1F127::from_num(0.5), I1F127::MAX, I1F127::MAX >> 1u32];
-    println!("I1F127");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![I1F127::from_num(0.5), I1F127::MAX, I1F127::MAX >> 1u32];
+    // println!("I1F127");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
-    let v = vec![U1F127::from_num(0.5), U1F127::MAX, U1F127::MAX >> 1u32];
-    println!("U1F127");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![U1F127::from_num(0.5), U1F127::MAX, U1F127::MAX >> 1u32];
+    // println!("U1F127");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
-    let v = vec![U1F31::from_num(0.5), U1F31::MAX, U1F31::MAX >> 1u32];
-    println!("U1F31");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![U1F31::from_num(0.5), U1F31::MAX, U1F31::MAX >> 1u32];
+    // println!("U1F31");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
-    let v = vec![U0F32::from_num(0.5), U0F32::MAX, U0F32::MAX >> 1u32];
-    println!("U0F32");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![U0F32::from_num(0.5), U0F32::MAX, U0F32::MAX >> 1u32];
+    // println!("U0F32");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
-    let v = vec![U0F128::from_num(0.5), U0F128::MAX, U0F128::MAX >> 1u32];
-    println!("U0F128");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![U0F128::from_num(0.5), U0F128::MAX, U0F128::MAX >> 1u32];
+    // println!("U0F128");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
     let v = vec![U3F29::from_num(0.5), U3F29::MAX, U3F29::MAX >> 1u32];
     println!("U3F29");
@@ -77,17 +77,17 @@ fn main() {
         println!("sqrt {} = {}", n, n.sqrt());
     }
 
-    let v = vec![U1F7::from_num(0.5), U1F7::MAX, U1F7::MAX >> 1u32];
-    println!("U1F7");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![U1F7::from_num(0.5), U1F7::MAX, U1F7::MAX >> 1u32];
+    // println!("U1F7");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
-    let v = vec![I1F7::from_num(0.5), I1F7::MAX, I1F7::MAX >> 1u32];
-    println!("I1F7");
-    for n in v {
-        println!("sqrt {} = {}", n, n.sqrt());
-    }
+    // let v = vec![I1F7::from_num(0.5), I1F7::MAX, I1F7::MAX >> 1u32];
+    // println!("I1F7");
+    // for n in v {
+    //     println!("sqrt {} = {}", n, n.sqrt());
+    // }
 
     let v = vec![U3F5::from_num(0.5), U3F5::MAX, U3F5::MAX >> 1u32];
     println!("U3F5");

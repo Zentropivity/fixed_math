@@ -27,7 +27,7 @@ pub(crate) const fn fixed_bits<Val>() -> u32
 where
     Val: Fixed,
 {
-    (Val::INT_BITS + Val::FRAC_BITS) as u32
+    (Val::INT_NBITS + Val::FRAC_NBITS) as u32
 }
 
 // WolframAlpha: 180/PI

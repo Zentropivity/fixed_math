@@ -8,7 +8,7 @@
 //! https://ww1.microchip.com/downloads/en/AppNotes/01061A.pdf
 
 use fixed::{
-    traits::{Fixed, FixedSigned, FixedStrict},
+    traits::{Fixed, FixedSigned},
     types::{U0F128, U1F127, U6F122},
 };
 
@@ -121,7 +121,7 @@ fn normalize_cordic_i8<Val: FixedSigned>(mut angle_degs: Val) -> (Val, bool) {
 ///
 /// Note: number representation needs at least 10 integer bits to fit 360.
 #[inline]
-pub fn sin_cos<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos<Val: FixedSigned>(angle_degs: Val) -> (Val, Val) {
     let (angle_normalized, neg) = normalize_cordic::<Val>(angle_degs);
     let result = sin_cos_deg_unchecked(angle_normalized);
     if neg {
@@ -136,7 +136,7 @@ pub fn sin_cos<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
 ///
 /// Note: only use for number representation with 9 int bits.
 #[inline]
-pub fn sin_cos_i9<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos_i9<Val: FixedSigned>(angle_degs: Val) -> (Val, Val) {
     let (angle_normalized, neg) = normalize_cordic_i9::<Val>(angle_degs);
     let result = sin_cos_deg_unchecked(angle_normalized);
     if neg {
@@ -150,7 +150,7 @@ pub fn sin_cos_i9<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val)
 ///
 /// Note: only use for number representation with 8 int bits.
 #[inline]
-pub fn sin_cos_i8<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos_i8<Val: FixedSigned>(angle_degs: Val) -> (Val, Val) {
     let (angle_normalized, neg) = normalize_cordic_i8::<Val>(angle_degs);
     let result = sin_cos_deg_unchecked(angle_normalized);
     if neg {
@@ -164,7 +164,7 @@ pub fn sin_cos_i8<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val)
 ///
 /// Note: only use for number representation with 7 int bits.
 #[inline]
-pub fn sin_cos_i7<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos_i7<Val: FixedSigned>(angle_degs: Val) -> (Val, Val) {
     //TODO make it work for less than i7
     let angle_normalized = angle_degs;
     sin_cos_deg_unchecked(angle_normalized) //TODO parameter for where to start atan table index
@@ -174,7 +174,7 @@ pub fn sin_cos_i7<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> (Val, Val)
 ///
 /// Note: use sin_cos when you need both for performance.
 #[inline]
-pub fn sin<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> Val {
+pub fn sin<Val: FixedSigned>(angle_degs: Val) -> Val {
     sin_cos(angle_degs).0
 }
 
@@ -182,14 +182,14 @@ pub fn sin<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> Val {
 ///
 /// Note: use sin_cos when you need both for performance.
 #[inline]
-pub fn cos<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> Val {
+pub fn cos<Val: FixedSigned>(angle_degs: Val) -> Val {
     sin_cos(angle_degs).1
 }
 
 /// Calculate tangent of an angle in degrees.
 /// Returns None when the cos is 0 or on overflow.
 #[inline]
-pub fn tan<Val: FixedSigned + FixedStrict>(angle_degs: Val) -> Option<Val> {
+pub fn tan<Val: FixedSigned>(angle_degs: Val) -> Option<Val> {
     let (sin, cos) = sin_cos(angle_degs);
     sin.checked_div(cos)
 }
@@ -245,7 +245,7 @@ where
 
 /// Only works with values in -90 to 90 degrees.
 #[inline]
-pub fn sin_cos_deg_unchecked<Val: FixedSigned + FixedStrict>(mut angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos_deg_unchecked<Val: FixedSigned>(mut angle_degs: Val) -> (Val, Val) {
     // debug_assert!(
     //     angle_degs <= Val::from_num(90) && Val::from_num(-90) <= angle_degs,
     //     "Can only take sin_cos of values in -90 to 90! Got: {}",
@@ -283,9 +283,7 @@ pub fn sin_cos_deg_unchecked<Val: FixedSigned + FixedStrict>(mut angle_degs: Val
 /// Currently it is very imprecise.
 /// You probably want to convert to degrees and use sin_cos instead.
 #[inline]
-pub fn sin_cos_rad<Val: FixedSigned + FixedStrict + FixedRadians>(
-    mut angle_rads: Val,
-) -> (Val, Val) {
+pub fn sin_cos_rad<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
     let mut neg = false;
     // FIXME % is very imprecise here...
     angle_rads %= Val::TAU;
@@ -327,9 +325,7 @@ where
 
 /// Only works for values in -π/2 to π/2 radians
 #[inline]
-pub fn sin_cos_rad_unchecked<Val: FixedSigned + FixedStrict + FixedRadians>(
-    mut angle_rads: Val,
-) -> (Val, Val) {
+pub fn sin_cos_rad_unchecked<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
     debug_assert!(
         angle_rads <= Val::FRAC_PI_2 && -Val::FRAC_PI_2 <= angle_rads,
         "Can only take sin_cos of values in -π/2 to π/2 (~ 1.57079)! Got: {}",
