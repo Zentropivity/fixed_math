@@ -5,7 +5,7 @@
 //! We use the CORDIC algorithm, following this paper:
 //! Efficient Fixed-Point Trigonometry Using CORDIC Functions For PIC16F - Jose Benavides Microchip Technology Inc.
 //! (2007)
-//! https://ww1.microchip.com/downloads/en/AppNotes/01061A.pdf
+//! <https://ww1.microchip.com/downloads/en/AppNotes/01061A.pdf>
 
 use fixed::{
     traits::{Fixed, FixedSigned},

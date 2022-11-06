@@ -5,7 +5,7 @@ use fixed::{
     FixedI128, FixedI16, FixedI32, FixedI64, FixedI8,
 };
 
-use typenum::{IsLessOrEqual, True, U118, U12, U124, U22, U28, U4, U54, U6, U60};
+use typenum::{IsLessOrEqual, Sum, True, U1, U118, U12, U124, U2, U22, U28, U4, U54, U6, U60};
 
 //TODO impl for lower than 10 int bits
 /// Calculation of sinus and cosinus for fixed number in degrees.
@@ -125,10 +125,12 @@ macro_rules! impl_rad_consts {
         impl<N> FixedRadians for $f<N>
         where
             N: $leq + IsLessOrEqual<$f0, Output = True>,
+            N: $leq + IsLessOrEqual<Sum<$f0, U1>, Output = True>,
+            N: $leq + IsLessOrEqual<Sum<$f0, U2>, Output = True>,
         {
-            const FRAC_PI_2: Self = Self::FRAC_PI_2;
-            const PI: Self = Self::PI;
-            const TAU: Self = Self::TAU;
+            const FRAC_PI_2: Self = $f::FRAC_PI_2;
+            const PI: Self = $f::PI;
+            const TAU: Self = $f::TAU;
         }
     };
 }
