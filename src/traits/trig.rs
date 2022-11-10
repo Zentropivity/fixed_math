@@ -7,7 +7,7 @@ use fixed::{
 
 use typenum::{IsLessOrEqual, Sum, True, U1, U118, U12, U124, U2, U22, U28, U4, U54, U6, U60};
 
-/// Calculation of sinus, cosinus and tangent for fixed number in **degrees**.
+/// Calculation of sinus, cosinus and tangent for number in **degrees**.
 pub trait SinCos
 where
     Self: Sized,
@@ -151,36 +151,36 @@ impl_rad_consts!(FixedI128, LeEqU128, U124);
 
 impl SinCos for f32 {
     fn sin_cos(self) -> (Self, Self) {
-        f32::sin_cos(self)
+        f32::sin_cos(self.to_radians())
     }
 
     fn sin(self) -> Self {
-        f32::sin(self)
+        f32::sin(self.to_radians())
     }
 
     fn cos(self) -> Self {
-        f32::cos(self)
+        f32::cos(self.to_radians())
     }
 
     fn tan(self) -> Option<Self> {
-        Some(f32::tan(self))
+        Some(f32::tan(self.to_radians()))
     }
 }
 
 impl SinCos for f64 {
     fn sin_cos(self) -> (Self, Self) {
-        f64::sin_cos(self)
+        f64::sin_cos(self.to_radians())
     }
 
     fn sin(self) -> Self {
-        f64::sin(self)
+        f64::sin(self.to_radians())
     }
 
     fn cos(self) -> Self {
-        f64::cos(self)
+        f64::cos(self.to_radians())
     }
 
     fn tan(self) -> Option<Self> {
-        Some(f64::tan(self))
+        Some(f64::tan(self.to_radians()))
     }
 }
