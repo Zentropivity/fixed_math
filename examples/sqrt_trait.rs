@@ -1,5 +1,5 @@
 use fixed::types::*;
-use fixed_math::FixedSqrt;
+use fixed_math::Sqrt;
 
 fn main() {
     let v = vec![

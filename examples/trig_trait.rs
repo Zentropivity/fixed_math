@@ -1,5 +1,5 @@
 use fixed::types::*;
-use fixed_math::FixedSinCos;
+use fixed_math::SinCos;
 
 fn main() {
     let v = vec![

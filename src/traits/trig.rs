@@ -7,18 +7,26 @@ use fixed::{
 
 use typenum::{IsLessOrEqual, Sum, True, U1, U118, U12, U124, U2, U22, U28, U4, U54, U6, U60};
 
-//TODO impl for lower than 10 int bits
-/// Calculation of sinus and cosinus for fixed number in degrees.
-pub trait FixedSinCos: FixedSigned {
+/// Calculation of sinus, cosinus and tangent for fixed number in **degrees**.
+pub trait SinCos
+where
+    Self: Sized,
+{
+    /// Simultaneously calculate sinus and cosinus, returns `(sin(self), cos(self))`.
     fn sin_cos(self) -> (Self, Self);
+    /// Calculate sinus.
+    /// `sin_cos` should be used instead when both sinus and cosinus are needed.
     fn sin(self) -> Self;
+    /// Calculate cosinus.
+    /// `sin_cos` should be used instead when both sinus and cosinus are needed.
     fn cos(self) -> Self;
+    /// Calculate tangent if it exists
     fn tan(self) -> Option<Self>;
 }
 
 macro_rules! impl_sincos_deg {
     ($f:ident, $leq:ident, $f0:ty) => {
-        impl<N> FixedSinCos for $f<N>
+        impl<N> SinCos for $f<N>
         where
             N: $leq + IsLessOrEqual<$f0, Output = True>,
         {
@@ -40,7 +48,7 @@ macro_rules! impl_sincos_deg {
 
 // macro_rules! impl_sincos_deg_small {
 //     ($f:ident, $f0:ty, $f1:ty, $f2:ty) => {
-//         impl FixedSinCos for $f<$f0> {
+//         impl SinCos for $f<$f0> {
 //             fn sin_cos(self) -> (Self, Self) {
 //                 sin_cos_i7(self)
 //             }
@@ -55,7 +63,7 @@ macro_rules! impl_sincos_deg {
 //                 sin.checked_div(cos)
 //             }
 //         }
-//         impl FixedSinCos for $f<$f1> {
+//         impl SinCos for $f<$f1> {
 //             fn sin_cos(self) -> (Self, Self) {
 //                 sin_cos_i8(self)
 //             }
@@ -70,7 +78,7 @@ macro_rules! impl_sincos_deg {
 //                 sin.checked_div(cos)
 //             }
 //         }
-//         impl FixedSinCos for $f<$f2> {
+//         impl SinCos for $f<$f2> {
 //             fn sin_cos(self) -> (Self, Self) {
 //                 sin_cos_i9(self)
 //             }
@@ -140,3 +148,39 @@ impl_rad_consts!(FixedI16, LeEqU16, U12);
 impl_rad_consts!(FixedI32, LeEqU32, U28);
 impl_rad_consts!(FixedI64, LeEqU64, U60);
 impl_rad_consts!(FixedI128, LeEqU128, U124);
+
+impl SinCos for f32 {
+    fn sin_cos(self) -> (Self, Self) {
+        f32::sin_cos(self)
+    }
+
+    fn sin(self) -> Self {
+        f32::sin(self)
+    }
+
+    fn cos(self) -> Self {
+        f32::cos(self)
+    }
+
+    fn tan(self) -> Option<Self> {
+        Some(f32::tan(self))
+    }
+}
+
+impl SinCos for f64 {
+    fn sin_cos(self) -> (Self, Self) {
+        f64::sin_cos(self)
+    }
+
+    fn sin(self) -> Self {
+        f64::sin(self)
+    }
+
+    fn cos(self) -> Self {
+        f64::cos(self)
+    }
+
+    fn tan(self) -> Option<Self> {
+        Some(f64::tan(self))
+    }
+}

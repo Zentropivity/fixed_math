@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use fixed::types::*;
-use fixed_math::FixedSinCos;
+use fixed_math::SinCos;
 
 pub fn sin_cos_in_range(c: &mut Criterion) {
     let arr = vec![

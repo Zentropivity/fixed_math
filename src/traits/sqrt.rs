@@ -1,4 +1,3 @@
-use fixed::traits::Fixed;
 use fixed::types::extra::{LeEqU128, LeEqU16, LeEqU32, LeEqU64, LeEqU8};
 use fixed::{
     FixedI128, FixedI16, FixedI32, FixedI64, FixedI8, FixedU128, FixedU16, FixedU32, FixedU64,
@@ -9,17 +8,18 @@ use typenum::{IsLess, True, U127, U15, U31, U63, U7};
 
 use crate::sqrt::{sqrt_i, sqrt_u};
 
-/// Fixed number that has square root.
+/// Take square root of a number.
 ///
-/// It is not implemented for number types with 0 integer bits.
-pub trait FixedSqrt: Fixed {
+/// It is not implemented for fixed number types with 0 integer bits.
+/// Implementation exists for `f32` and `f64` too.
+pub trait Sqrt {
     /// Calculate square root.
     fn sqrt(self) -> Self;
 }
 
 macro_rules! impl_sqrt_i {
     ($f:ident, $leq:ident, $f0:ty) => {
-        impl<N> FixedSqrt for $f<N>
+        impl<N> Sqrt for $f<N>
         where
             N: $leq + IsLess<$f0, Output = True>,
         {
@@ -29,7 +29,7 @@ macro_rules! impl_sqrt_i {
             }
         }
         //FIXME this should be doable...
-        // impl<N> FixedSqrt for $f<N>
+        // impl<N> Sqrt for $f<N>
         // where
         //     N: Unsigned + IsEqual<$f0, Output = True>,
         // {
@@ -43,7 +43,7 @@ macro_rules! impl_sqrt_i {
 
 macro_rules! impl_sqrt_u {
     ($f:ident, $leq:ident, $f0:ty, $f1:ty) => {
-        impl<N> FixedSqrt for $f<N>
+        impl<N> Sqrt for $f<N>
         where
             N: $leq + IsLess<$f0, Output = True>,
         {
@@ -53,13 +53,13 @@ macro_rules! impl_sqrt_u {
             }
         }
         //FIXME this should be doable...
-        // impl FixedSqrt for $f<$f0> {
+        // impl Sqrt for $f<$f0> {
         //     #[inline(always)]
         //     fn sqrt(self) -> Self {
         //         sqrt_u1(self)
         //     }
         // }
-        // impl FixedSqrt for $f<$f1> {
+        // impl Sqrt for $f<$f1> {
         //     #[inline(always)]
         //     fn sqrt(self) -> Self {
         //         sqrt_u0(self)
@@ -79,3 +79,16 @@ impl_sqrt_u!(FixedU16, LeEqU16, U15, U16);
 impl_sqrt_u!(FixedU32, LeEqU32, U31, U32);
 impl_sqrt_u!(FixedU64, LeEqU64, U63, U64);
 impl_sqrt_u!(FixedU128, LeEqU128, U127, U128);
+
+impl Sqrt for f32 {
+    #[inline(always)]
+    fn sqrt(self) -> Self {
+        f32::sqrt(self)
+    }
+}
+impl Sqrt for f64 {
+    #[inline(always)]
+    fn sqrt(self) -> Self {
+        f64::sqrt(self)
+    }
+}
