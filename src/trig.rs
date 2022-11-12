@@ -286,24 +286,24 @@ pub fn sin_cos_deg_unchecked<Val: FixedSigned>(mut angle_degs: Val) -> (Val, Val
 pub fn sin_cos_rad<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
     let mut neg = false;
     // FIXME % is very imprecise here...
-    angle_rads %= Val::TAU;
+    angle_rads %= <Val as FixedRadians>::TAU;
 
     // FIXME FRAC_3_PI_2 should be a const; maybe even NEG_FRAC_3_PI_2
-    let frac_3_pi_2 = Val::PI + Val::FRAC_PI_2;
+    let frac_3_pi_2 = <Val as FixedRadians>::PI + <Val as FixedRadians>::FRAC_PI_2;
 
-    if angle_rads < -Val::FRAC_PI_2 {
+    if angle_rads < -<Val as FixedRadians>::FRAC_PI_2 {
         if -frac_3_pi_2 <= angle_rads {
-            angle_rads += Val::PI;
+            angle_rads += <Val as FixedRadians>::PI;
             neg = true;
         } else {
-            angle_rads += Val::TAU;
+            angle_rads += <Val as FixedRadians>::TAU;
         }
-    } else if Val::FRAC_PI_2 < angle_rads {
+    } else if <Val as FixedRadians>::FRAC_PI_2 < angle_rads {
         if angle_rads <= frac_3_pi_2 {
-            angle_rads -= Val::PI;
+            angle_rads -= <Val as FixedRadians>::PI;
             neg = true;
         } else {
-            angle_rads -= Val::TAU;
+            angle_rads -= <Val as FixedRadians>::TAU;
         }
     }
     let c_res = sin_cos_rad_unchecked(angle_rads);
@@ -327,7 +327,8 @@ where
 #[inline]
 pub fn sin_cos_rad_unchecked<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
     debug_assert!(
-        angle_rads <= Val::FRAC_PI_2 && -Val::FRAC_PI_2 <= angle_rads,
+        angle_rads <= <Val as FixedRadians>::FRAC_PI_2
+            && -<Val as FixedRadians>::FRAC_PI_2 <= angle_rads,
         "Can only take sin_cos of values in -π/2 to π/2 (~ 1.57079)! Got: {}",
         angle_rads
     );

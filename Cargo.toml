@@ -1,6 +1,6 @@
 [package]
 name = "fixed_math"
-description = "Some math functions for `fixed` point numbers."
+description = "Some math traits and functions for `fixed` point numbers."
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -9,12 +9,15 @@ license = "MIT OR Apache-2.0"
 members = ["tablegen"]
 
 [features]
-default = []
+default = ["std"]
+num_traits = ["dep:num-traits", "fixed/num-traits"]
 std = ["fixed/std"]
 
 [dependencies]
-fixed = { path = "../fixed" }
-typenum = "1.15.0"
+fixed = { version = "1.20" }
+# match fixed deps
+typenum = "1.14"
+num-traits = { version = "0.2.15", default-features = false, features = ["i128"], optional = true }
 
 [dev-dependencies]
 criterion = "0.4"

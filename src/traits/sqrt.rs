@@ -13,7 +13,7 @@ use crate::sqrt::{sqrt_i, sqrt_u};
 /// It is not implemented for fixed number types with 0 integer bits.
 /// Implementation exists for `f32` and `f64` too.
 pub trait Sqrt {
-    /// Calculate square root.
+    /// Calculate the square root of `self`.
     fn sqrt(self) -> Self;
 }
 
