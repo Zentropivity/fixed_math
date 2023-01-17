@@ -2,6 +2,11 @@
 name = "fixed_math"
 description = "Some math traits and functions for `fixed` point numbers."
 version = "0.1.0"
+documentation = "https://docs.rs/fixed_math"
+repository = "https://github.com/Zentropivity/fixed_math"
+readme = "README.md"
+keywords = ["fixed", "math", "numerics"]
+categories = ["algorithms", "mathematics"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
