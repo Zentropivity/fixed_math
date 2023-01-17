@@ -14,7 +14,7 @@ num_traits = ["dep:num-traits", "fixed/num-traits"]
 std = ["fixed/std"]
 
 [dependencies]
-fixed = { version = "1.20" }
+fixed = { version = "1.21" }
 # match fixed deps
 typenum = "1.14"
 num-traits = { version = "0.2.15", default-features = false, features = ["i128"], optional = true }

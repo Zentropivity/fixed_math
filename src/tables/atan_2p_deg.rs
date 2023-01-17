@@ -1,5 +1,6 @@
 use fixed::types::U6F122;
 
+/// `atan(2^{-i}) : i in 0..=128` in degrees
 pub const ATAN_2P_DEG: [U6F122; 129] = [
     U6F122::from_le_bytes([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 180]),
     U6F122::from_le_bytes([

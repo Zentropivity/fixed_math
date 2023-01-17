@@ -1,3 +1,5 @@
+# Fixed Math
+
 This library implements analytic/trigonometric functions for [fixed point numbers](https://gitlab.com/tspiteri/fixed).
 
 Implemented functions:
@@ -15,7 +17,7 @@ There are traits and standalone functions, see examples on how to use them.
 
 ### Errors
 
-Check the examples to see about how much error this produces.
+Check the examples to see about how much error this implementation produces.
 
 Usually `sqrt` has an error of around 1-2 Delta.  
 (Delta = the distance to the next representable number)

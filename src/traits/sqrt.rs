@@ -28,7 +28,7 @@ macro_rules! impl_sqrt_i {
                 sqrt_i(self)
             }
         }
-        //FIXME this should be doable...
+        //FIXME this should be doable... would work with const generics and seq_macro implementation, but we are on stable Rust
         // impl<N> Sqrt for $f<N>
         // where
         //     N: Unsigned + IsEqual<$f0, Output = True>,

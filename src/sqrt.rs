@@ -1,10 +1,10 @@
 //! Square root functions for fixed numbers.
 //!
-//! - `sqrt_u` : for unsigned numbers with 1 < integer bits
-//! - `sqrt_u0` : for unsigned numbers with 0 integer bits
-//! - `sqrt_u1` : for unsigned numbers with 1 integer bit
-//! - `sqrt_i` : for signed numbers with 1 < integer bits
-//! - `sqrt_i1` : for signed numbers with 1 integer bit
+//! - [sqrt_u] : for unsigned numbers with 1 < integer bits
+//! - [sqrt_u0] : for unsigned numbers with 0 integer bits
+//! - [sqrt_u1] : for unsigned numbers with 1 integer bit
+//! - [sqrt_i] : for signed numbers with 1 < integer bits
+//! - [sqrt_i1] : for signed numbers with 1 integer bit
 //! - _`sqrt_i0`_ : Does not exist, because sqrt of number can not be represented.
 //!
 //! Square root is not implemented for fixed numbers with 0 integer bits as it would almost always overflow.
@@ -20,7 +20,7 @@ use crate::util::*;
 
 /// Calculate square root of unsigned fixed number.
 ///
-/// This implementation only handles numbers which can represent 1.
+/// This function only handles numbers which can represent 1.
 /// Use `sqrt_u1` for number with 1 integer bit.
 /// Use `sqrt_u0` for number without integer bits.
 #[inline]
