@@ -62,13 +62,15 @@ All code in this repository is dual-licensed under either:
 
 at your option.
 
-We use code modified from [cordic](https://github.com/sebcrozet/cordic), licensed as BSD-3-Clause:
-
-- [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
-
 ## Contributing
 
 Unless you explicitly state otherwise,
 any contribution intentionally submitted for inclusion in the work by you,
 as defined in the Apache-2.0 license, shall be dual licensed as above,
 without any additional terms or conditions.
+
+## Attribution
+
+We use code modified from [cordic](https://github.com/sebcrozet/cordic), licensed as BSD-3-Clause:
+
+- [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
