@@ -17,24 +17,21 @@ use crate::{
     traits::FixedRadians,
 };
 
-// WolframAlpha is nice
+/// WolframAlpha: Product[1/Sqrt[1 + 2^-2j],{j,0,128}]
 /// This is a constant used by the algorithm.
-/// product[i in 0..=128] 1/sqrt(1 + 2^{-2i})
-const KN: U1F127 = U1F127::from_le_bytes([
-    117, 160, 254, 235, 149, 132, 252, 250, 51, 45, 175, 33, 212, 118, 186, 77,
-]);
+const KN: U1F127 = U1F127::lit(
+    "0.60725293500888125616944675250492826311239085215008977245697601311014788120842578",
+);
 
 /// 180 / π
 /// used to convert from radians to degrees
-pub const FRAC_180_PI: U6F122 = U6F122::from_le_bytes([
-    215, 87, 210, 64, 127, 83, 151, 10, 195, 189, 15, 30, 211, 224, 46, 229,
-]);
+pub const FRAC_180_PI: U6F122 =
+    U6F122::lit("57.295779513082320876798154814105170332405472466564321549160243861");
 
 /// π / 180
 /// used to convert from degrees to radians
-pub const FRAC_PI_180: U0F128 = U0F128::from_le_bytes([
-    39, 46, 164, 116, 179, 47, 118, 112, 69, 78, 167, 148, 168, 209, 119, 4,
-]);
+pub const FRAC_PI_180: U0F128 =
+    U0F128::lit("0.0174532925199432957692369076848861271344287188854172545609719144");
 
 /// Simply convert a fixed number from radians to degrees by multiplication.
 pub fn rad_to_deg<Val: Fixed>(angle_rads: Val) -> Val {
