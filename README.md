@@ -34,7 +34,7 @@ Here are some conclusions I've got to:
 
 <details>
 <summary>
-_2022-09-28_
+2022-09-28
 </summary>
 
 Calculation time for sin_cos varies with the fixed number's byte size.
