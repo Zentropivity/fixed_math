@@ -5,5 +5,4 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-fixed = "1.19.0"
-fixed-macro = "1.1.1"
+fixed = "1.23"

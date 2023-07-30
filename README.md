@@ -32,6 +32,7 @@ Here are some conclusions I've got to:
 
 ### SinCos
 
+
 _2022-09-28_
 
 Calculation time for sin_cos varies with the fixed number's byte size.
@@ -52,6 +53,56 @@ Notes:
   - keep in mind that `cordic` works with radians, I used the same angle values
   - so they can take `sin_cos` of a lot bigger angle on the same number representation size
   - this crate was about 1.5-2 times faster on same angle sizes
+
+_2023-07-30_
+
+<details>
+<summary>
+System info:
+</summary>
+
+```
+                   -`                    
+                  .o+`                   --------
+                 `ooo/                   OS: Arch Linux x86_64
+                `+oooo:                  Host: X570 AORUS ELITE -CF
+               `+oooooo:                 Kernel: 6.4.7-arch1-1
+               -+oooooo+:                
+             `/:-:++oooo+:               
+            `/++++/+++++++:              Shell: fish 3.6.1
+           `/++++++++++++++:             Resolution: 3840x2160
+          `/+++ooooooooooooo/`           DE: Hyprland
+         ./ooosssso++osssssso+`          
+        .oossssso-````/ossssss+`         
+       -osssssso.      :ssssssso.        Terminal: WezTerm
+      :osssssss/        osssso+++.       CPU: AMD Ryzen 7 5800X (16) @ 3.800GHz
+     /ossssssss/        +ssssooo/-       GPU: AMD ATI Radeon RX 7900 XT/7900 XTX
+   `/ossssso+/:-        -:/+osssso+-     Memory: 6657MiB / 32014MiB
+  `+sso+:-`                 `.-/+oso:
+ `++:.                           `-/+/
+ .`                                 `/
+```
+</details>
+
+Performance is different now and **without native cpu features**:
+
+- I10F6: ~ 430ps
+- I16F16: ~ 15ns
+- I32F32: ~ 25ns
+- I32F96: ~ 255ns
+
+**With native cpu features** : `RUSTFLAGS="-C target-cpu=native" cargo bench`:
+
+- I10F6: ~ 420ps
+- I16F16: ~ 8ns
+- I32F32: ~ 22ns
+- I32F96: ~ 222ns
+
+Notes:
+
+- performance regressed at I32F32 and I32F96
+- performance improved a lot at I10F6, so we might consider using 16bit fixed point values where we do not need much precision
+- _cordic benchmark not checked..._
 
 ## License
 
