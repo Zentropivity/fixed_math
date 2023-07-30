@@ -7,7 +7,7 @@ use fixed::{
 
 use typenum::{IsLessOrEqual, Sum, True, U1, U118, U12, U124, U2, U22, U28, U4, U54, U6, U60};
 
-/// Calculation of sinus, cosinus and tangent for number in **degrees**.
+/// Calculation of sine, cosine and tangent for number in **degrees**.
 pub trait SinCos
 where
     Self: Sized,
