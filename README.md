@@ -32,8 +32,10 @@ Here are some conclusions I've got to:
 
 ### SinCos
 
-
+<details>
+<summary>
 _2022-09-28_
+</summary>
 
 Calculation time for sin_cos varies with the fixed number's byte size.
 
@@ -53,6 +55,8 @@ Notes:
   - keep in mind that `cordic` works with radians, I used the same angle values
   - so they can take `sin_cos` of a lot bigger angle on the same number representation size
   - this crate was about 1.5-2 times faster on same angle sizes
+
+</details>
 
 _2023-07-30_
 
