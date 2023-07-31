@@ -11,6 +11,10 @@ Implemented functions:
   - All calculations are made in degrees
     - except that there is a `sin_cos_rad` function which is very imprecise; check [source code](src/trig.rs) for why, feel free to fix it (its not a priority for me)
 
+## Optional Features
+
+- std : std feature of **fixed**, there is no proper no-std support yet...
+
 ## Examples
 
 There are traits and standalone functions, see examples on how to use them.
@@ -81,7 +85,7 @@ System info:
        -osssssso.      :ssssssso.        Terminal: WezTerm
       :osssssss/        osssso+++.       CPU: AMD Ryzen 7 5800X (16) @ 3.800GHz
      /ossssssss/        +ssssooo/-       GPU: AMD ATI Radeon RX 7900 XT/7900 XTX
-   `/ossssso+/:-        -:/+osssso+-     Memory: 6657MiB / 32014MiB
+   `/ossssso+/:-        -:/+osssso+-     Memory: 32014MiB
   `+sso+:-`                 `.-/+oso:
  `++:.                           `-/+/
  .`                                 `/
