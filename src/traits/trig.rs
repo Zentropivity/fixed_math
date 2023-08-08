@@ -12,15 +12,15 @@ pub trait SinCos
 where
     Self: Sized,
 {
-    /// Simultaneously calculate sinus and cosinus, returns `(sin(self), cos(self))`.
+    /// Simultaneously calculate sine and cosine, returns `(sin(self), cos(self))`.
     fn sin_cos(self) -> (Self, Self);
-    /// Calculate sinus.
-    /// `sin_cos` should be used instead when both sinus and cosinus are needed.
+    /// Calculate sine of an angle.
+    /// `sin_cos` should be used instead when both sine and cosine are needed.
     fn sin(self) -> Self;
-    /// Calculate cosinus.
-    /// `sin_cos` should be used instead when both sinus and cosinus are needed.
+    /// Calculate cosinus on an angle.
+    /// `sin_cos` should be used instead when both sine and cosine are needed.
     fn cos(self) -> Self;
-    /// Calculate tangent if it exists
+    /// Calculate tangent of an angle if it exists.
     fn tan(self) -> Option<Self>;
 }
 
