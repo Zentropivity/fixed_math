@@ -1,5 +1,5 @@
 use fixed::types::*;
-use fixed_math::trig::*;
+use fixed_math::{trig::*, util::rad_to_deg};
 
 fn main() {
     //TODO more
@@ -42,7 +42,7 @@ fn main() {
     }
 
     // let v = vec![
-    //     //TODO fix
+    //     //TODO fix atan
     //     I32F32::from_num(-0.4663076578),
     //     I32F32::from_num(0.466307657),
     //     I32F32::from_num(-0.9999999993),

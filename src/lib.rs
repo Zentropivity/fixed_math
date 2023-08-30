@@ -5,9 +5,11 @@
 //! - sqrt
 //! - sin_cos, sin, cos, tan
 //!
+//! _(May add pow and exp later...)_
+//!
 //! They have different constraints and may panic or return wrong values if called with the wrong number representation.
 //!
-//! The trait implementations ([SinCos], [Sqrt]) could not be implemented for all valid number representations, use the functions for those.
+//! The trait implementations ([SinCos], [Sqrt]) could not be implemented for all valid types, use the functions for those.
 //!
 //! ## Example
 //!
@@ -22,6 +24,7 @@
 //! assert_eq!(sqrt_i(f), I32F32::from_num(2.0));
 //! ```
 
+pub mod conversions;
 pub mod util;
 
 pub mod traits;
@@ -32,3 +35,8 @@ pub mod sqrt;
 pub mod trig;
 
 pub(crate) mod tables;
+
+pub mod prelude {
+    pub use crate::conversions::*;
+    pub use crate::traits::*;
+}

@@ -17,6 +17,7 @@ pub trait Sqrt {
     fn sqrt(self) -> Self;
 }
 
+//TODO seq_macro it
 macro_rules! impl_sqrt_i {
     ($f:ident, $leq:ident, $f0:ty) => {
         impl<N> Sqrt for $f<N>

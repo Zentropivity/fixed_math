@@ -5,7 +5,7 @@ use fixed::{
     FixedI128, FixedI16, FixedI32, FixedI64, FixedI8,
 };
 
-use typenum::{IsLessOrEqual, Sum, True, U1, U118, U12, U124, U2, U22, U28, U4, U54, U6, U60};
+use typenum::{IsLessOrEqual, Sum, True, U1, U12, U121, U124, U2, U25, U28, U4, U57, U60, U9};
 
 /// Calculation of sine, cosine and tangent for number in **degrees**.
 pub trait SinCos
@@ -29,6 +29,7 @@ macro_rules! impl_sincos_deg {
         impl<N> SinCos for $f<N>
         where
             N: $leq + IsLessOrEqual<$f0, Output = True>,
+            $f<N>: NormalizeCordic,
         {
             fn sin_cos(self) -> (Self, Self) {
                 sin_cos(self)
@@ -46,73 +47,14 @@ macro_rules! impl_sincos_deg {
     };
 }
 
-// macro_rules! impl_sincos_deg_small {
-//     ($f:ident, $f0:ty, $f1:ty, $f2:ty) => {
-//         impl SinCos for $f<$f0> {
-//             fn sin_cos(self) -> (Self, Self) {
-//                 sin_cos_i7(self)
-//             }
-//             fn sin(self) -> Self {
-//                 sin_cos_i7(self).0
-//             }
-//             fn cos(self) -> Self {
-//                 sin_cos_i7(self).1
-//             }
-//             fn tan(self) -> Option<Self> {
-//                 let (sin, cos) = sin_cos_i7(self);
-//                 sin.checked_div(cos)
-//             }
-//         }
-//         impl SinCos for $f<$f1> {
-//             fn sin_cos(self) -> (Self, Self) {
-//                 sin_cos_i8(self)
-//             }
-//             fn sin(self) -> Self {
-//                 sin_cos_i8(self).0
-//             }
-//             fn cos(self) -> Self {
-//                 sin_cos_i8(self).1
-//             }
-//             fn tan(self) -> Option<Self> {
-//                 let (sin, cos) = sin_cos_i8(self);
-//                 sin.checked_div(cos)
-//             }
-//         }
-//         impl SinCos for $f<$f2> {
-//             fn sin_cos(self) -> (Self, Self) {
-//                 sin_cos_i9(self)
-//             }
-//             fn sin(self) -> Self {
-//                 sin_cos_i9(self).0
-//             }
-//             fn cos(self) -> Self {
-//                 sin_cos_i9(self).1
-//             }
-//             fn tan(self) -> Option<Self> {
-//                 let (sin, cos) = sin_cos_i9(self);
-//                 sin.checked_div(cos)
-//             }
-//         }
-//     };
-// }
-
-impl_sincos_deg!(FixedI16, LeEqU16, U6);
-impl_sincos_deg!(FixedI32, LeEqU32, U22);
-impl_sincos_deg!(FixedI64, LeEqU64, U54);
-impl_sincos_deg!(FixedI128, LeEqU128, U118);
-
-// impl_sincos_deg_small!(FixedI16, U9, U8, U7);
-// impl_sincos_deg_small!(FixedI32, U25, U24, U23);
-// impl_sincos_deg_small!(FixedI64, U53, U54, U55);
-// impl_sincos_deg_small!(FixedI128, U117, U118, U119);
-
-//TODO impl this somehow for perf
-// pub trait FixedDegrees: FixedSigned {
-//     const D_90: Self;
-//     const D_180: Self;
-//     const D_270: Self;
-//     const D_360: Self;
-// }
+//TODO implement on sub-7 int bits too -> KN will need to be recalculated for each step down too...
+// Note: right now the atan table has 45 as highest entry which would overflow on 6 int bits.
+//       maybe skipping the highest entries in some way, the algorithm still works?
+impl_sincos_deg!(FixedI8, LeEqU8, U1);
+impl_sincos_deg!(FixedI16, LeEqU16, U9);
+impl_sincos_deg!(FixedI32, LeEqU32, U25);
+impl_sincos_deg!(FixedI64, LeEqU64, U57);
+impl_sincos_deg!(FixedI128, LeEqU128, U121);
 
 /// There are requirements for certain constants:
 ///

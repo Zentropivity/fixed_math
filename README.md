@@ -4,10 +4,10 @@ This library implements analytic/trigonometric functions for [fixed point number
 
 Implemented functions:
 
-- `sqrt` from trait `FixedSqrt`
-  - `FixedSqrt` is not implemented for fixed numbers with less than 2 integer bits, but there are functions that work on those types: `sqrt_i1`, ...
-- `sin_cos`, `sin`, `cos`, `tan` from trait `FixedSinCos`
-  - `FixedSinCos` is not implemented for fixed numbers with less than 7 integer bits, but there are functions that work on some of those types: `sin_cos_i7`, ...
+- `sqrt` from trait `Sqrt`
+  - `Sqrt` is not implemented for fixed numbers with less than 2 integer bits, but there are functions that work on those types: `sqrt_i1`, ...
+- `sin_cos`, `sin`, `cos`, `tan` from trait `SinCos`
+  - `SinCos` is not implemented for fixed numbers with less than 8 _(TODO 7)_ integer bits because the there are table values that would overflow on those types.
   - All calculations are made in degrees
     - except that there is a `sin_cos_rad` function which is very imprecise; check [source code](src/trig.rs) for why, feel free to fix it (its not a priority for me)
 
