@@ -29,7 +29,7 @@ macro_rules! impl_sincos_deg {
         impl<N> SinCos for $f<N>
         where
             N: $leq + IsLessOrEqual<$f0, Output = True>,
-            $f<N>: NormalizeCordic,
+            $f<N>: NormalizeCordic + CordicConstants,
         {
             fn sin_cos(self) -> (Self, Self) {
                 sin_cos(self)

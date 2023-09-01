@@ -1,7 +1,7 @@
 [package]
 name = "fixed_math"
 description = "Some math traits and functions for `fixed` point numbers."
-version = "0.3.0"
+version = "0.4.0"
 documentation = "https://docs.rs/fixed_math"
 repository = "https://github.com/Zentropivity/fixed_math"
 readme = "README.md"
@@ -29,4 +29,8 @@ criterion = "0.4"
 
 [[bench]]
 name = "sin_cos"
+harness = false
+
+[[bench]]
+name = "sqrt"
 harness = false

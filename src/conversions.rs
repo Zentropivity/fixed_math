@@ -4,7 +4,7 @@ pub trait DegreesToRadians {
     fn deg_to_rad(angle_degs: Self) -> Self;
 }
 /// Conversion for values from radians to degrees.
-/// This may overflow and panic... Anyone needs a safe alternative?
+/// Not implemented for fixed types with less than 7 integer bits.
 pub trait RadiansToDegrees {
     const FRAC_180_PI: Self;
     fn rad_to_deg(angle_degs: Self) -> Self;
@@ -56,9 +56,10 @@ mod fixed_impl {
         FixedI128, FixedI16, FixedI32, FixedI64, FixedI8, FixedU128, FixedU16, FixedU32, FixedU64,
         FixedU8,
     };
+    use typenum::*;
 
     macro_rules! impl_fixed_conv {
-        ($f:ident, $leq:ident) => {
+        ($f:ident, $leq:ident, $f0:ty) => {
             impl<N> DegreesToRadians for $f<N>
             where
                 N: $leq,
@@ -73,7 +74,7 @@ mod fixed_impl {
             }
             impl<N> RadiansToDegrees for $f<N>
             where
-                N: $leq,
+                N: $leq + IsLess<$f0, Output = True>,
             {
                 const FRAC_180_PI: Self =
                     Self::lit("57.295779513082320876798154814105170332405472466564321549160243861");
@@ -86,15 +87,15 @@ mod fixed_impl {
         };
     }
 
-    impl_fixed_conv!(FixedI8, LeEqU8);
-    impl_fixed_conv!(FixedI16, LeEqU16);
-    impl_fixed_conv!(FixedI32, LeEqU32);
-    impl_fixed_conv!(FixedI64, LeEqU64);
-    impl_fixed_conv!(FixedI128, LeEqU128);
+    impl_fixed_conv!(FixedI8, LeEqU8, U2);
+    impl_fixed_conv!(FixedI16, LeEqU16, U14);
+    impl_fixed_conv!(FixedI32, LeEqU32, U30);
+    impl_fixed_conv!(FixedI64, LeEqU64, U62);
+    impl_fixed_conv!(FixedI128, LeEqU128, U126);
 
-    impl_fixed_conv!(FixedU8, LeEqU8);
-    impl_fixed_conv!(FixedU16, LeEqU16);
-    impl_fixed_conv!(FixedU32, LeEqU32);
-    impl_fixed_conv!(FixedU64, LeEqU64);
-    impl_fixed_conv!(FixedU128, LeEqU128);
+    impl_fixed_conv!(FixedU8, LeEqU8, U3);
+    impl_fixed_conv!(FixedU16, LeEqU16, U13);
+    impl_fixed_conv!(FixedU32, LeEqU32, U29);
+    impl_fixed_conv!(FixedU64, LeEqU64, U60);
+    impl_fixed_conv!(FixedU128, LeEqU128, U125);
 }

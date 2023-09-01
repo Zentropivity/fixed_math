@@ -7,21 +7,76 @@
 //! (2007)
 //! <https://ww1.microchip.com/downloads/en/AppNotes/01061A.pdf>
 
-use fixed::{
-    traits::{Fixed, FixedSigned},
-    types::U1F127,
-};
+use fixed::traits::{Fixed, FixedSigned};
 
 use crate::{
     tables::{ATAN_2P_DEG, ATAN_2P_RAD},
     traits::FixedRadians,
 };
 
-/// WolframAlpha: Product[1/Sqrt[1 + 2^-2j],{j,0,128}]
-/// This is a constant used by the algorithm.
-const KN: U1F127 = U1F127::lit(
-    "0.60725293500888125616944675250492826311239085215008977245697601311014788120842578",
-);
+pub(crate) mod cordic_constants {
+    use fixed::types::extra::{LeEqU128, LeEqU16, LeEqU32, LeEqU64, LeEqU8};
+    use fixed::{
+        FixedI128, FixedI16, FixedI32, FixedI64, FixedI8, FixedU128, FixedU16, FixedU32, FixedU64,
+        FixedU8,
+    };
+    use typenum::*;
+
+    /// Constants used by the cordic algorithm
+    pub trait CordicConstants {
+        /// WolframAlpha: Product[1/Sqrt[1 + 2^-2j],{j,0,128}]
+        /// "0.60725293500888125616944675250492826311239085215008977245697601311014788120842578"
+        const KN: Self;
+    }
+
+    impl CordicConstants for f32 {
+        const KN: Self =
+            0.60725293500888125616944675250492826311239085215008977245697601311014788120842578f32;
+    }
+    impl CordicConstants for f64 {
+        const KN: Self =
+            0.60725293500888125616944675250492826311239085215008977245697601311014788120842578f64;
+    }
+
+    macro_rules! impl_cordic_constants {
+        ($f:ident, $leq:ident, $f0:ty) => {
+            impl<N> CordicConstants for $f<N>
+            where
+                N: $leq + IsLess<$f0, Output = True>,
+            {
+                const KN: Self = Self::lit(
+                    "0.60725293500888125616944675250492826311239085215008977245697601311014788120842578",
+                );
+            }
+        };
+    }
+    macro_rules! impl_cordic_constants_u {
+        ($f:ident, $leq:ident) => {
+            impl<N> CordicConstants for $f<N>
+            where
+                N: $leq
+            {
+                const KN: Self = Self::lit(
+                    "0.60725293500888125616944675250492826311239085215008977245697601311014788120842578",
+                );
+            }
+        };
+    }
+
+    impl_cordic_constants!(FixedI8, LeEqU8, U8);
+    impl_cordic_constants!(FixedI16, LeEqU16, U16);
+    impl_cordic_constants!(FixedI32, LeEqU32, U32);
+    impl_cordic_constants!(FixedI64, LeEqU64, U64);
+    impl_cordic_constants!(FixedI128, LeEqU128, U128);
+
+    impl_cordic_constants_u!(FixedU8, LeEqU8);
+    impl_cordic_constants_u!(FixedU16, LeEqU16);
+    impl_cordic_constants_u!(FixedU32, LeEqU32);
+    impl_cordic_constants_u!(FixedU64, LeEqU64);
+    impl_cordic_constants_u!(FixedU128, LeEqU128);
+}
+
+pub use cordic_constants::CordicConstants;
 
 /// Setup traits for the cordic sincos.
 /// Maps an angle to the interval of -90 to 90 degrees.
@@ -241,7 +296,7 @@ pub use normalization::*;
 
 /// Only works with values in -90 to 90 degrees.
 #[inline]
-pub fn sin_cos_deg_unchecked<Val: FixedSigned + NormalizeCordic>(
+pub fn sin_cos_deg_unchecked<Val: FixedSigned + NormalizeCordic + CordicConstants>(
     mut angle_degs: Val,
 ) -> (Val, Val) {
     // debug_assert!(
@@ -249,7 +304,7 @@ pub fn sin_cos_deg_unchecked<Val: FixedSigned + NormalizeCordic>(
     //     "Can only take sin_cos of values in -90 to 90! Got: {}",
     //     angle_degs
     // );
-    let mut x: Val = Val::from_fixed(KN);
+    let mut x: Val = Val::KN;
     let mut y: Val = Val::ZERO;
     let mut at: Val = atan_table_deg::<Val>(0);
     let mut i = 0u32;
@@ -314,7 +369,9 @@ fn sin_cos_right_angles<Val: FixedSigned + NormalizeCordic>(
 ///
 /// Note: number representation needs at least 10 integer bits to fit 360.
 #[inline]
-pub fn sin_cos<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> (Val, Val) {
+pub fn sin_cos<Val: FixedSigned + NormalizeCordic + CordicConstants>(
+    angle_degs: Val,
+) -> (Val, Val) {
     let (angle_normalized, neg) = Val::normalize_cordic(angle_degs);
     //TODO use constants instead of from_num
     // get values for right angles
@@ -334,7 +391,7 @@ pub fn sin_cos<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> (Val, Val
 ///
 /// Note: use sin_cos when you need both for performance.
 #[inline]
-pub fn sin<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> Val {
+pub fn sin<Val: FixedSigned + NormalizeCordic + CordicConstants>(angle_degs: Val) -> Val {
     sin_cos(angle_degs).0
 }
 
@@ -342,14 +399,14 @@ pub fn sin<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> Val {
 ///
 /// Note: use sin_cos when you need both for performance.
 #[inline]
-pub fn cos<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> Val {
+pub fn cos<Val: FixedSigned + NormalizeCordic + CordicConstants>(angle_degs: Val) -> Val {
     sin_cos(angle_degs).1
 }
 
 /// Calculate tangent of an angle in degrees.
 /// Returns None when the cos is 0 or on overflow.
 #[inline]
-pub fn tan<Val: FixedSigned + NormalizeCordic>(angle_degs: Val) -> Option<Val> {
+pub fn tan<Val: FixedSigned + NormalizeCordic + CordicConstants>(angle_degs: Val) -> Option<Val> {
     let (sin, cos) = sin_cos(angle_degs);
     sin.checked_div(cos)
 }
@@ -367,7 +424,9 @@ where
 /// Currently it is very imprecise.
 /// You probably want to convert to degrees and use sin_cos instead.
 #[inline]
-pub fn sin_cos_rad<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
+pub fn sin_cos_rad<Val: FixedSigned + FixedRadians + CordicConstants>(
+    mut angle_rads: Val,
+) -> (Val, Val) {
     let mut neg = false;
     // FIXME % is very imprecise here...
     angle_rads %= <Val as FixedRadians>::TAU;
@@ -409,14 +468,16 @@ where
 
 /// Only works for values in -π/2 to π/2 radians
 #[inline]
-pub fn sin_cos_rad_unchecked<Val: FixedSigned + FixedRadians>(mut angle_rads: Val) -> (Val, Val) {
+pub fn sin_cos_rad_unchecked<Val: FixedSigned + FixedRadians + CordicConstants>(
+    mut angle_rads: Val,
+) -> (Val, Val) {
     debug_assert!(
         angle_rads <= <Val as FixedRadians>::FRAC_PI_2
             && -<Val as FixedRadians>::FRAC_PI_2 <= angle_rads,
         "Can only take sin_cos of values in -π/2 to π/2 (~ 1.57079)! Got: {}",
         angle_rads
     );
-    let mut x: Val = Val::from_fixed(KN);
+    let mut x: Val = Val::KN;
     let mut y: Val = Val::ZERO;
     let mut at: Val = atan_table_rad::<Val>(0);
     let mut i = 0u32;
