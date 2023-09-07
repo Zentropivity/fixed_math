@@ -5,15 +5,16 @@ This library implements analytic/trigonometric functions for [fixed point number
 Implemented functions:
 
 - `sqrt` from trait `Sqrt`
-  - `Sqrt` is not implemented for fixed numbers with less than 2 integer bits, but there are functions that work on those types: `sqrt_i1`, ...
+  - `Sqrt` is not implemented for FixedI* types with 0 integer bits since that would overflow.
 - `sin_cos`, `sin`, `cos`, `tan` from trait `SinCos`
-  - `SinCos` is not implemented for fixed numbers with less than 8 _(TODO 7)_ integer bits because the there are table values that would overflow on those types.
+  - `SinCos` is not implemented for fixed numbers with less than 7 integer bits because there are table values that would overflow on those types.
   - All calculations are made in degrees
-    - except that there is a `sin_cos_rad` function which is very imprecise; check [source code](src/trig.rs) for why, feel free to fix it (its not a priority for me)
+    - except that there is a `sin_cos_rad` function which is very imprecise; check [source code](src/trig.rs) to see why, feel free to fix it (it is not important for me)
 
 ## Optional Features
 
 - std : std feature of **fixed**, there is no proper no-std support yet...
+- right_angles : by using an additional match, sin_cos gives exact result from an angle that is a multiple of 90 degrees; could be useful on a grid.
 
 ## Examples
 
