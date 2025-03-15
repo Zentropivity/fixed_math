@@ -5,11 +5,19 @@
 //! - sqrt
 //! - sin_cos, sin, cos, tan
 //!
-//! _(May add pow and exp later...)_
+//! _(May add pow, exp and log later...)_
 //!
 //! They have different constraints and may panic or return wrong values if called with the wrong number representation.
 //!
 //! The trait implementations ([SinCos], [Sqrt]) could not be implemented for all valid types, use the functions for those.
+//!
+//! ## Cargo features
+//!
+//! - **std**  
+//!   uses **fixed/std**  
+//!   (This does not mean we aren't completely no-std yet, may look into it if the need arises...)
+//! - **right_angles**  
+//!   explicitly checks right angles in sincos to return exact values
 //!
 //! ## Example
 //!
