@@ -1,7 +1,7 @@
 [package]
 name = "fixed_math"
 description = "Some math traits and functions for `fixed` point numbers."
-version = "0.4.1"
+version = "0.4.2"
 documentation = "https://docs.rs/fixed_math"
 repository = "https://github.com/Zentropivity/fixed_math"
 readme = "README.md"
@@ -19,7 +19,7 @@ right_angles = []
 std = ["fixed/std"]
 
 [dependencies]
-fixed = { version = "1.23" }
+fixed = { version = "1.29" }
 seq-macro = "0.3"
 # match fixed deps
 typenum = "1.16"
