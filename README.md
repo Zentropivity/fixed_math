@@ -122,15 +122,16 @@ All code in this repository is dual-licensed under either:
 
 at your option.
 
-## Contributing
+### AI training
 
-Unless you explicitly state otherwise,
-any contribution intentionally submitted for inclusion in the work by you,
-as defined in the Apache-2.0 license, shall be dual licensed as above,
-without any additional terms or conditions.
+Additionally, content - code, media, audio, text, images - in this repository (https://github.com/Zentropivity/fixed_math) may only be used for AI training after paying a one-time fee of 5000 USD to the maintainer through Github Sponsors (https://github.com/sponsors/Zentropivity). You may fork this repository and remove this restriction at your own discretion.
 
-## Attribution
+### Attribution
 
 We use code modified from [cordic](https://github.com/sebcrozet/cordic), licensed as BSD-3-Clause:
 
 - [LICENSE_CORDIC](third_party/LICENSE_CORDIC).
+
+### Your Contributions
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
