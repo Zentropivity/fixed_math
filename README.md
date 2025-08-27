@@ -110,7 +110,7 @@ Performance is different now and **without native cpu features**:
 Notes:
 
 - performance regressed at I32F32 and I32F96
-- performance improved a lot at I10F6, so we might consider using 16bit fixed point values where we do not need much precision
+- performance improved a lot at I16F16, so we might consider using 32bit fixed point values with ease
 - _cordic benchmark not checked..._
 
 ## License
