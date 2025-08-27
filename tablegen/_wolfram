@@ -1,0 +1,15 @@
+#!/usr/bin/env nu
+
+# Query Wolfram|Alpha
+export def wolfram [query: string] {
+  let appid = open ~/.wolfram_api_key
+
+  let query_params = { output: "JSON", format: "plaintext", input: $query, appid: $appid }
+  let url = {
+    scheme: "http",
+    host: "api.wolframalpha.com",
+    path: "/v2/query",
+    params: $query_params
+  } | url join
+  return (http get $url | get queryresult)
+}
